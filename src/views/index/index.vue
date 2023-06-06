@@ -8,16 +8,30 @@
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <a url="/pages/make-question/index" class="operation-area-btn-main">开始出题</a>
+        <div class="operation-area-btn-main" @click="startMakeQuestion">开始出题</div>
       </div>
       <div class="operation-area-btn-sub">
-        <a url="/pages/my-question/record" class="operation-area-btn-sub-main">我的出题记录</a>
-        <a url="/pages/record/index" class="operation-area-btn-sub-main">答题/获奖记录</a>
+        <div class="operation-area-btn-sub-main" @click="myQuestionRecord">我的出题记录</div>
+        <div class="operation-area-btn-sub-main" @click="answerRecord">答题/获奖记录</div>
       </div>
     </div>
   </div>
 </template>
-<script></script>
+<script lang="ts" setup>
+  import router from '/@/router';
+
+  const startMakeQuestion = () => {
+    router.push({ path: 'make-question' });
+  };
+
+  const myQuestionRecord = () => {
+    router.push({ path: 'my-question-record' });
+  };
+
+  const answerRecord = () => {
+    router.push({ path: 'answer-record' });
+  };
+</script>
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;

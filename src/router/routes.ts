@@ -61,6 +61,33 @@ export const routes = [
     },
   },
   {
+    name: 'makeQuestion',
+    path: '/make-question',
+    component: () => import('/@/views/make-question/index.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'myQuestion',
+    path: '/my-question-record',
+    component: () => import('/@/views/my-question/record.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'answerRecord',
+    path: '/answer-record',
+    component: () => import('/@/views/answer-record/index.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
     name: 'login',
     path: '/login',
     component: () => import('/@/views/login/index.vue'),
