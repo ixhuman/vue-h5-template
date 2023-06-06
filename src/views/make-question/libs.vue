@@ -43,12 +43,18 @@
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <navigator url="/pages/answer/result" class="operation-area-btn-main">返回出题页面</navigator>
+        <div class="operation-area-btn-main" @click="goBackMakeQuestion">返回出题页面</div>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts"></script>
+<script lang="ts" setup>
+  import router from '/@/router';
+
+  const goBackMakeQuestion = () => {
+    router.push({ path: '/make-question' });
+  };
+</script>
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;

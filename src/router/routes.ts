@@ -79,6 +79,15 @@ export const routes = [
     },
   },
   {
+    name: 'edit',
+    path: '/edit',
+    component: () => import('/@/views/make-question/edit.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
     name: 'myQuestion',
     path: '/my-question-record',
     component: () => import('/@/views/my-question/record.vue'),

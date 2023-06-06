@@ -32,7 +32,7 @@
       <div class="operation-area-btn">
         <div class="operation-area-btn-main">上一题</div>
         <div class="operation-area-btn-main" @click="changeQuestion">换一道题</div>
-        <div class="operation-area-btn-main">修改本题</div>
+        <div class="operation-area-btn-main" @click="editQuestion">修改本题</div>
       </div>
     </div>
   </div>
@@ -42,6 +42,10 @@
 
   const changeQuestion = () => {
     router.push({ path: '/libs' });
+  };
+
+  const editQuestion = () => {
+    router.push({ path: '/edit' });
   };
 </script>
 <style lang="scss" scoped>
