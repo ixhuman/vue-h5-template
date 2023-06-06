@@ -35,6 +35,10 @@
           <div class="content-area-bd-cell-tag">问</div>
           <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
         </div>
+        <div class="content-area-bd-cell content-area-bd-cell-title">
+          <div class="content-area-bd-cell-tag">问</div>
+          <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
+        </div>
       </div>
     </div>
     <div class="operation-area">
@@ -60,8 +64,8 @@
   }
   .content-area {
     padding: 72px 72px 0;
-    margin-bottom: 168px;
-    height: 100%;
+    margin-bottom: 200px;
+    height: 100vh;
     overflow: scroll;
   }
 
@@ -173,9 +177,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-top: 48px;
-    margin-bottom: 48px;
-    padding: 72px;
+    padding: 48px 72px;
     box-sizing: border-box;
   }
 
