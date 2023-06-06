@@ -70,6 +70,15 @@ export const routes = [
     },
   },
   {
+    name: 'libs',
+    path: '/libs',
+    component: () => import('/@/views/make-question/libs.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
     name: 'myQuestion',
     path: '/my-question-record',
     component: () => import('/@/views/my-question/record.vue'),
