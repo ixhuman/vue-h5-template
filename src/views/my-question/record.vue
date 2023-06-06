@@ -25,12 +25,18 @@
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <navigator url="/pages/home/index" class="operation-area-btn-main">返回首页</navigator>
+        <div class="operation-area-btn-main" @click="goHome">返回首页</div>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts"></script>
+<script lang="ts" setup>
+  import router from '/@/router';
+
+  const goHome = () => {
+    router.push({ path: '/' });
+  };
+</script>
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;
