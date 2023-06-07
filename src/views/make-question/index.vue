@@ -37,8 +37,29 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
+  import { questions } from './data';
   import router from '/@/router';
+
+  function generateRandomArray(data) {
+    const len = data.length;
+    const arr = [];
+
+    for (let i = 0; i < len; i++) {
+      arr.push(i);
+    }
+
+    const result = [];
+    while (result.length < 10) {
+      const randomIndex = Math.floor(Math.random() * arr.length);
+      const num = arr.splice(randomIndex, 1)[0];
+      result.push(data[num]);
+    }
+    return result;
+  }
+
+  const randomArray = generateRandomArray(questions);
+  console.log(randomArray);
 
   const changeQuestion = () => {
     router.push({ path: '/question-lib' });
