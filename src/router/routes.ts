@@ -70,8 +70,8 @@ export const routes = [
     },
   },
   {
-    name: 'libs',
-    path: '/libs',
+    name: 'questionLib',
+    path: '/question-lib',
     component: () => import('/@/views/make-question/libs.vue'),
     meta: {
       title: '',
@@ -79,9 +79,27 @@ export const routes = [
     },
   },
   {
-    name: 'edit',
-    path: '/edit',
+    name: 'editQuestion',
+    path: '/edit-question',
     component: () => import('/@/views/make-question/edit.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'setReward',
+    path: '/set-reward',
+    component: () => import('/@/views/make-question/reward.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'share',
+    path: '/share',
+    component: () => import('/@/views/share/index.vue'),
     meta: {
       title: '',
       keepAlive: true,

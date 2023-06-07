@@ -14,7 +14,7 @@
           <div class="content-area-bd-cell-tag">A</div>
           <div class="content-area-bd-cell-text">光盘行动</div>
         </div>
-        <div class="content-area-bd-cell content-area-bd-cell-active">
+        <div class="content-area-bd-cell content-area-bd-cell-active" @click="setReward">
           <div class="content-area-bd-cell-tag">B</div>
           <div class="content-area-bd-cell-text">选中后变黄，然后自动转下一题</div>
         </div>
@@ -41,11 +41,15 @@
   import router from '/@/router';
 
   const changeQuestion = () => {
-    router.push({ path: '/libs' });
+    router.push({ path: '/question-lib' });
   };
 
   const editQuestion = () => {
-    router.push({ path: '/edit' });
+    router.push({ path: '/edit-question' });
+  };
+
+  const setReward = () => {
+    router.push({ path: '/set-reward' });
   };
 </script>
 <style lang="scss" scoped>
@@ -164,6 +168,7 @@
     position: relative;
     background-color: #ffffff;
     font-size: 34px;
+    line-height: 42px;
     font-weight: bold;
     padding: 16px 4px;
     border: 4px solid #000000;
