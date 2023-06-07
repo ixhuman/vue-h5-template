@@ -6,25 +6,25 @@
         <div class="content-area-hd-tip">请点击你认可的选项</div>
       </div>
       <div class="content-area-bd">
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
+        <div class="content-area-cell content-area-cell-title">
+          <div class="content-area-cell-tag">问</div>
+          <div class="content-area-cell-text">我做过最多的环保活动是什么？</div>
         </div>
-        <div class="content-area-bd-cell">
-          <div class="content-area-bd-cell-tag">A</div>
-          <div class="content-area-bd-cell-text">光盘行动</div>
+        <div class="content-area-cell">
+          <div class="content-area-cell-tag">A</div>
+          <div class="content-area-cell-text">光盘行动</div>
         </div>
-        <div class="content-area-bd-cell content-area-bd-cell-active" @click="setReward">
-          <div class="content-area-bd-cell-tag">B</div>
-          <div class="content-area-bd-cell-text">选中后变黄，然后自动转下一题</div>
+        <div class="content-area-cell content-area-cell-active" @click="setReward">
+          <div class="content-area-cell-tag">B</div>
+          <div class="content-area-cell-text">选中后变黄，然后自动转下一题</div>
         </div>
-        <div class="content-area-bd-cell">
-          <div class="content-area-bd-cell-tag">C</div>
-          <div class="content-area-bd-cell-text">二次利用</div>
+        <div class="content-area-cell">
+          <div class="content-area-cell-tag">C</div>
+          <div class="content-area-cell-text">二次利用</div>
         </div>
-        <div class="content-area-bd-cell">
-          <div class="content-area-bd-cell-tag">D</div>
-          <div class="content-area-bd-cell-text">节约用电</div>
+        <div class="content-area-cell">
+          <div class="content-area-cell-tag">D</div>
+          <div class="content-area-cell-text">节约用电</div>
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
     margin-top: 48px;
   }
 
-  .content-area-bd-cell {
+  .content-area-cell {
     border-radius: 16px;
     background-color: #fff;
     border: 4px solid #000000;
@@ -96,11 +96,11 @@
     box-sizing: border-box;
   }
 
-  .content-area-bd-cell:not(:first-child) {
+  .content-area-cell:not(:first-child) {
     margin-top: 40px;
   }
 
-  .content-area-bd-cell-tag {
+  .content-area-cell-tag {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -116,7 +116,7 @@
     box-sizing: border-box;
   }
 
-  .content-area-bd-cell-text {
+  .content-area-cell-text {
     display: flex;
     margin-left: 16px;
     font-size: 28px;
@@ -126,20 +126,20 @@
     flex: 1;
   }
 
-  .content-area-bd-cell-title {
+  .content-area-cell-title {
     background-color: #000000;
   }
 
-  .content-area-bd-cell-title .content-area-bd-cell-tag {
+  .content-area-cell-title .content-area-cell-tag {
     background-color: #fff;
     color: #000000;
   }
 
-  .content-area-bd-cell-title .content-area-bd-cell-text {
+  .content-area-cell-title .content-area-cell-text {
     color: #fff;
   }
 
-  .content-area-bd-cell-active {
+  .content-area-cell-active {
     background-color: #f8d448;
   }
 

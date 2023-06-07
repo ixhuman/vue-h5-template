@@ -115,9 +115,36 @@ export const routes = [
     },
   },
   {
+    name: 'answerDetail',
+    path: '/answer-detail',
+    component: () => import('/@/views/my-question/detail.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'checkQuestion',
+    path: '/check-question',
+    component: () => import('/@/views/my-question/check.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
     name: 'answerRecord',
     path: '/answer-record',
     component: () => import('/@/views/answer-record/index.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'answer',
+    path: '/answer',
+    component: () => import('/@/views/answer/index.vue'),
     meta: {
       title: '',
       keepAlive: true,

@@ -15,13 +15,13 @@
         </div>
         <div class="content-area-cell-ft icon-arrow"> </div>
       </div>
-      <navigator url="/pages/my-question/detail" class="content-area-cell">
+      <div class="content-area-cell" @click="detail">
         <div class="content-area-cell-bd">
           <div class="content-area-cell-title content-area-cell-title-active">奖励：做一天CP</div>
           <div class="content-area-cell-desc"> 10人答题、5人获奖 </div>
         </div>
         <div class="content-area-cell-ft icon-arrow"> </div>
-      </navigator>
+      </div>
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
@@ -35,6 +35,10 @@
 
   const goHome = () => {
     router.push({ path: '/' });
+  };
+
+  const detail = () => {
+    router.push({ path: '/answer-detail' });
   };
 </script>
 <style lang="scss" scoped>
@@ -72,6 +76,8 @@
 
   .content-area-cell-title {
     font-size: 36px;
+    line-height: 44px;
+    font-weight: bold;
   }
 
   .content-area-cell-title-active {
@@ -79,7 +85,9 @@
   }
 
   .content-area-cell-desc {
+    margin-top: 8px;
     font-size: 28px;
+    line-height: 36px;
   }
 
   .icon-arrow {

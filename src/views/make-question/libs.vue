@@ -70,7 +70,7 @@
   }
   .content-area {
     padding: 72px 72px 0;
-    margin-bottom: 200px;
+    margin-bottom: 240px;
     height: 100vh;
     overflow: scroll;
   }
