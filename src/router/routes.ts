@@ -144,7 +144,25 @@ export const routes = [
   {
     name: 'answer',
     path: '/answer',
-    component: () => import('/@/views/answer/index.vue'),
+    component: () => import('/@/views/answer-question/index.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'answering',
+    path: '/answering',
+    component: () => import('/@/views/answer-question/doing.vue'),
+    meta: {
+      title: '',
+      keepAlive: true,
+    },
+  },
+  {
+    name: 'answerResult',
+    path: '/answer-result',
+    component: () => import('/@/views/answer-question/result.vue'),
     meta: {
       title: '',
       keepAlive: true,

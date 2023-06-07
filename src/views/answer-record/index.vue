@@ -86,10 +86,6 @@
     padding: 72px 72px 0;
   }
 
-  .content-area-cell:not(:first-child) {
-    margin-top: 32px;
-  }
-
   .content-area-cell {
     display: flex;
     justify-content: flex-start;
@@ -98,6 +94,10 @@
     border: 4px solid #000000;
     border-radius: 16px;
     padding: 32px;
+  }
+
+  .content-area-cell:not(:first-child) {
+    margin-top: 32px;
   }
 
   .content-area-cell-bd {
