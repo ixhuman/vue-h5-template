@@ -105,13 +105,14 @@
   // 换一题
   const changeQuestion = () => {
     // 1.取一道新题
-    const oneQuestion = getOneQuestion(ques, questionList);
-    console.log('oneQuestion', oneQuestion);
+    // const oneQuestion = getOneQuestion(ques, questionList);
+    // console.log('oneQuestion', oneQuestion);
     // 2.替换 questionList 中下标为 index 的题目对象
-    questionList.splice(index, 1, oneQuestion);
-    console.log('questionList', questionList);
+    // questionList.splice(index, 1, oneQuestion);
+    // console.log('questionList', questionList);
     // 3.设置当前题目 setCurrentQuestion(index)
-    setCurrentQuestion(index);
+    // setCurrentQuestion(index);
+    router.push({ path: '/question-lib' });
   };
 
   //设置答案并且设置下一题
@@ -129,28 +130,30 @@
     console.log(state.currentQuestion, questionList);
   };
 
-  const getOneQuestion = (libs, list) => {
-    const listIndexs = [];
+  // const getOneQuestion = (libs, list) => {
+  //   const listIndexs = [];
 
-    list.forEach((element) => {
-      listIndexs.push(element.index);
-    });
+  //   list.forEach((element) => {
+  //     listIndexs.push(element.index);
+  //   });
 
-    libs.forEach((element, key) => {
-      if (listIndexs.indexOf(element.index) > -1) {
-        libs.splice(key, 1);
-      }
-    });
+  //   libs.forEach((element, key) => {
+  //     if (listIndexs.indexOf(element.index) > -1) {
+  //       libs.splice(key, 1);
+  //     }
+  //   });
 
-    const result = libs.find((element) => {
-      if (libsIndexs.indexOf(element.index) > -1) {
-        console.log('element', element);
-        return element;
-      }
-    });
+  //   const libsIndexs = getIndexs(libs, 1);
 
-    return result;
-  };
+  //   const result = libs.find((element) => {
+  //     if (libsIndexs.indexOf(element.index) > -1) {
+  //       console.log('element', element);
+  //       return element;
+  //     }
+  //   });
+
+  //   return result;
+  // };
 
   const editQuestion = () => {
     router.push({ path: '/edit-question' });
@@ -200,7 +203,7 @@
     padding: 24px;
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     box-sizing: border-box;
   }
 
@@ -220,6 +223,7 @@
     border-radius: 8px;
     padding: 4px 12px;
     width: 48px;
+    height: 48px;
     text-align: center;
     box-sizing: border-box;
   }
