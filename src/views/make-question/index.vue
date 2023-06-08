@@ -2,35 +2,29 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-hd">
-        <div class="content-area-hd-no">第 1 / 10 题</div>
+        <div class="content-area-hd-no">第 {{ index + 1 }} / {{ questionList.length }} 题</div>
         <div class="content-area-hd-tip">请点击你认可的选项</div>
       </div>
       <div class="content-area-bd">
         <div class="content-area-cell content-area-cell-title">
           <div class="content-area-cell-tag">问</div>
-          <div class="content-area-cell-text">我做过最多的环保活动是什么？</div>
+          <div class="content-area-cell-text">{{ state.currentQuestion.title }}</div>
         </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-tag">A</div>
-          <div class="content-area-cell-text">光盘行动</div>
-        </div>
-        <div class="content-area-cell content-area-cell-active" @click="setReward">
-          <div class="content-area-cell-tag">B</div>
-          <div class="content-area-cell-text">选中后变黄，然后自动转下一题</div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-tag">C</div>
-          <div class="content-area-cell-text">二次利用</div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-tag">D</div>
-          <div class="content-area-cell-text">节约用电</div>
+        <div
+          class="content-area-cell"
+          v-for="(item, index) of state.currentQuestion.items"
+          :class="item.active ? 'content-area-cell-active' : ''"
+          :key="item.text"
+          @click="setAnswer(state.currentQuestion.items, item)"
+        >
+          <div class="content-area-cell-tag">{{ index }}</div>
+          <div class="content-area-cell-text">{{ item.text }}</div>
         </div>
       </div>
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <div class="operation-area-btn-main">上一题</div>
+        <div v-if="index != 0" class="operation-area-btn-main" @click="toPrevQuestion">上一题</div>
         <div class="operation-area-btn-main" @click="changeQuestion">换一道题</div>
         <div class="operation-area-btn-main" @click="editQuestion">修改本题</div>
       </div>
@@ -38,31 +32,124 @@
   </div>
 </template>
 <script setup>
-  import { questions } from './data';
+  import { ques } from './libs';
   import router from '/@/router';
 
-  function generateRandomArray(data) {
-    const len = data.length;
+  // 获取答题库中 index 数组
+  const getIndexs = (libs, num) => {
+    const len = libs.length;
     const arr = [];
 
     for (let i = 0; i < len; i++) {
-      arr.push(i);
+      arr.push(libs[i].index);
     }
 
     const result = [];
-    while (result.length < 10) {
+
+    while (result.length < num) {
       const randomIndex = Math.floor(Math.random() * arr.length);
-      const num = arr.splice(randomIndex, 1)[0];
-      result.push(data[num]);
+      const randomValue = arr.splice(randomIndex, 1)[0];
+      result.push(randomValue);
     }
+
     return result;
-  }
+  };
 
-  const randomArray = generateRandomArray(questions);
-  console.log(randomArray);
+  // 获取10题
+  const getListQuestion = (libs) => {
+    const indexs = getIndexs(libs, 10);
+    const result = [];
 
+    libs.forEach((element) => {
+      if (indexs.indexOf(element.index) > -1) {
+        result.push(element);
+      }
+    });
+
+    return result;
+  };
+
+  const questionList = getListQuestion(ques);
+  console.log('questionList', questionList);
+
+  let index = 0; //题目序号 初始化为0
+
+  //设置 当前题目 响应式对象
+  const state = reactive({
+    currentQuestion: questionList[index],
+  });
+
+  // 根据题目序号，设置当前题目
+  const setCurrentQuestion = (index) => {
+    // 超出范围，直接返回
+    if (index < 0) {
+      return;
+    } else if (index >= questionList.length) {
+      console.log('10题做完');
+      setReward();
+      return;
+    }
+    state.currentQuestion = questionList[index];
+  };
+
+  // 上一题
+  const toPrevQuestion = () => {
+    setCurrentQuestion(--index);
+  };
+
+  // 下一题
+  const toNextQuestion = () => {
+    setCurrentQuestion(++index);
+  };
+
+  // 换一题
   const changeQuestion = () => {
-    router.push({ path: '/question-lib' });
+    // 1.取一道新题
+    const oneQuestion = getOneQuestion(ques, questionList);
+    console.log('oneQuestion', oneQuestion);
+    // 2.替换 questionList 中下标为 index 的题目对象
+    questionList.splice(index, 1, oneQuestion);
+    console.log('questionList', questionList);
+    // 3.设置当前题目 setCurrentQuestion(index)
+    setCurrentQuestion(index);
+  };
+
+  //设置答案并且设置下一题
+  const setAnswer = (list, item) => {
+    //1.重置其它选项
+    list.forEach((it) => {
+      it.active = false;
+    });
+    //2.设置当前选项为正确答案
+    item.active = true;
+    //3.下一题
+    setTimeout(() => {
+      toNextQuestion();
+    }, 500);
+    console.log(state.currentQuestion, questionList);
+  };
+
+  const getOneQuestion = (libs, list) => {
+    const listIndexs = [];
+
+    list.forEach((element) => {
+      listIndexs.push(element.index);
+    });
+
+    libs.forEach((element, key) => {
+      if (listIndexs.indexOf(element.index) > -1) {
+        libs.splice(key, 1);
+      }
+    });
+
+    const result = libs.find((element) => {
+      if (libsIndexs.indexOf(element.index) > -1) {
+        console.log('element', element);
+        return element;
+      }
+    });
+
+    return result;
   };
 
   const editQuestion = () => {
@@ -113,7 +200,7 @@
     padding: 24px;
     display: flex;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     box-sizing: border-box;
   }
 

@@ -1,4 +1,4 @@
-export const questions = [
+export const ques = [
   {
     type: 'youqulinghun',
     title: '我是个看重金钱的人吗？',

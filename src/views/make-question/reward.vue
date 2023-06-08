@@ -26,7 +26,7 @@
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <div class="operation-area-btn-main">返回修改出题</div>
+        <div class="operation-area-btn-main" @click="modifyMakeQuestion">返回修改出题</div>
         <div class="operation-area-btn-main bg-f8d448" @click="confirmMakeQuestion">确认出题</div>
       </div>
     </div>
@@ -34,6 +34,10 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+
+  const modifyMakeQuestion = () => {
+    router.push({ path: '/make-question' });
+  };
 
   const confirmMakeQuestion = () => {
     router.push({ path: '/share' });
