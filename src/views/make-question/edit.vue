@@ -7,7 +7,7 @@
         <div class="content-area-cell-hd">
           <img src="../../assets/minus.png" mode="widthFix" />
         </div>
-        <div class="content-area-cell-bd">光盘行动</div>
+        <div class="content-area-cell-bd"><input type="text" value="光盘行动" style="border: transparent" /></div>
       </div>
       <div class="content-area-cell">
         <div class="content-area-cell-hd">
@@ -94,6 +94,7 @@
   }
 
   .content-area-cell-bd {
+    flex: 1;
     margin-left: 16px;
     margin-top: 3px;
     font-size: 28px;

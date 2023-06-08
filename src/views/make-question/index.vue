@@ -17,7 +17,7 @@
           :key="item.text"
           @click="setAnswer(state.currentQuestion.items, item)"
         >
-          <div class="content-area-cell-tag">{{ index }}</div>
+          <div class="content-area-cell-tag">{{ String.fromCharCode(index + 65) }}</div>
           <div class="content-area-cell-text">{{ item.text }}</div>
         </div>
       </div>

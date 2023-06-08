@@ -4,40 +4,26 @@
       <div class="content-area-hd">
         <div class="content-area-hd-no">题库分类</div>
         <div class="content-area-hd-tags">
-          <div class="content-area-hd-tag content-area-hd-tag-active">有趣灵魂</div>
-          <div class="content-area-hd-tag">性格相关</div>
-          <div class="content-area-hd-tag">生活三观</div>
-          <div class="content-area-hd-tag">日常了解</div>
-          <div class="content-area-hd-tag">假如如果</div>
-          <div class="content-area-hd-tag">吃喝玩乐</div>
-          <div class="content-area-hd-tag">爱情观念</div>
-          <div class="content-area-hd-tag">关于我的</div>
+          <div
+            class="content-area-hd-tag"
+            v-for="(item, index) in state.types"
+            :class="index == state.type ? 'content-area-hd-tag-active' : ''"
+            :key="index"
+            @click="($event) => changeType(index)"
+          >
+            {{ item }}
+          </div>
         </div>
       </div>
       <div class="content-area-bd">
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
-        </div>
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">如果文字很多酒换行显示，我做过最多的环保活动是什么？</div>
-        </div>
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
-        </div>
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">如果文字很多酒换行显示，我做过最多的环保活动是什么？</div>
-        </div>
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
-        </div>
-        <div class="content-area-bd-cell content-area-bd-cell-title">
-          <div class="content-area-bd-cell-tag">问</div>
-          <div class="content-area-bd-cell-text">我做过最多的环保活动是什么？</div>
+        <div
+          class="content-area-cell content-area-cell-title"
+          v-for="(item, index) in state.typeQuestion"
+          :key="index"
+          @click="($event) => selectedQuestion(item)"
+        >
+          <div class="content-area-cell-tag">问</div>
+          <div class="content-area-cell-text">{{ item.title }}</div>
         </div>
       </div>
     </div>
@@ -48,11 +34,59 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
+  import { ques } from './libs';
   import router from '/@/router';
+
+  const types = {
+    youqulinghun: '有趣灵魂',
+    chihewanle: '吃喝玩乐',
+    xingge: '性格相关',
+    jiaruruguo: '假如如果',
+    richangliaojie: '日常了解',
+    aiqing: '爱情观念',
+    sanguan: '生活三观',
+    guanyuwo: '关于我的',
+    gongzuo: '工作相关',
+  };
+
+  const getQuestions = (libs) => {
+    const result = {};
+
+    libs.forEach((element) => {
+      if (!result[`${element.type}`]) {
+        result[`${element.type}`] = [];
+      }
+
+      result[`${element.type}`].push(element);
+    });
+
+    return result;
+  };
+
+  const questions = getQuestions(ques);
+  console.log('getQuestions', types, questions);
+
+  let type = 'youqulinghun'; //题目序号 初始化为0
+
+  const state = reactive({
+    type,
+    types,
+    typeQuestion: questions[type],
+  });
 
   const goBackMakeQuestion = () => {
     router.push({ path: '/make-question' });
+  };
+
+  const changeType = (index) => {
+    console.log('changeType', index);
+    state.type = index;
+    state.typeQuestion = questions[index];
+  };
+
+  const selectedQuestion = (item) => {
+    console.log('selectedQuestion', item);
   };
 </script>
 <style lang="scss" scoped>
@@ -104,7 +138,7 @@
     background-color: #f8d448;
   }
 
-  .content-area-bd-cell {
+  .content-area-cell {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -115,7 +149,7 @@
     margin-top: 40px;
   }
 
-  .content-area-bd-cell {
+  .content-area-cell {
     border-radius: 16px;
     background-color: #fff;
     border: 4px solid #000000;
@@ -126,11 +160,11 @@
     box-sizing: border-box;
   }
 
-  .content-area-bd-cell:not(:first-child) {
+  .content-area-cell:not(:first-child) {
     margin-top: 40px;
   }
 
-  .content-area-bd-cell-tag {
+  .content-area-cell-tag {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -146,7 +180,7 @@
     box-sizing: border-box;
   }
 
-  .content-area-bd-cell-text {
+  .content-area-cell-text {
     display: flex;
     margin-left: 16px;
     font-size: 28px;
@@ -157,20 +191,20 @@
     flex: 1;
   }
 
-  .content-area-bd-cell-title {
+  .content-area-cell-title {
     background-color: #000000;
   }
 
-  .content-area-bd-cell-title .content-area-bd-cell-tag {
+  .content-area-cell-title .content-area-cell-tag {
     background-color: #fff;
     color: #000000;
   }
 
-  .content-area-bd-cell-title .content-area-bd-cell-text {
+  .content-area-cell-title .content-area-cell-text {
     color: #fff;
   }
 
-  .content-area-bd-cell-active {
+  .content-area-cell-active {
     background-color: #f8d448;
   }
 
