@@ -2,7 +2,7 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-hd">
-        <div class="content-area-hd-no">第 {{ index + 1 }} / {{ questionList.length }} 题</div>
+        <div class="content-area-hd-no">第 {{ makeQuestion.getCurrentNo }} / {{ makeQuestion.questionTotal }} 题</div>
         <div class="content-area-hd-tip">请点击你认可的选项</div>
       </div>
       <div class="content-area-bd">
@@ -32,45 +32,12 @@
   </div>
 </template>
 <script setup>
-  import { ques } from './libs';
   import router from '/@/router';
+  import { useMakeQuestion } from '/@/store/makeQuestion';
 
-  // 获取答题库中 index 数组
-  const getIndexs = (libs, num) => {
-    const len = libs.length;
-    const arr = [];
+  const makeQuestion = useMakeQuestion();
 
-    for (let i = 0; i < len; i++) {
-      arr.push(libs[i].index);
-    }
-
-    const result = [];
-
-    while (result.length < num) {
-      const randomIndex = Math.floor(Math.random() * arr.length);
-      const randomValue = arr.splice(randomIndex, 1)[0];
-      result.push(randomValue);
-    }
-
-    return result;
-  };
-
-  // 获取10题
-  const getListQuestion = (libs) => {
-    const indexs = getIndexs(libs, 10);
-    const result = [];
-
-    libs.forEach((element) => {
-      if (indexs.indexOf(element.index) > -1) {
-        result.push(element);
-      }
-    });
-
-    return result;
-  };
-
-  const questionList = getListQuestion(ques);
-  console.log('questionList', questionList);
+  const questionList = makeQuestion.getList();
 
   let index = 0; //题目序号 初始化为0
 

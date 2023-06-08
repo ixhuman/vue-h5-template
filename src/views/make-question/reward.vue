@@ -22,6 +22,10 @@
           <div class="content-area-cell-hd">至少答对</div>
           <div class="content-area-cell-ft icon-arrow">8题</div>
         </div>
+        <van-field v-model="fieldValue" is-link readonly label="至少" placeholder="8题" @click="showPicker = true" />
+        <van-popup v-model:show="showPicker" round position="bottom">
+          <van-picker v-model="selectedValues" :columns="columns" @cancel="showPicker = false" @confirm="onConfirm" />
+        </van-popup>
       </div>
     </div>
     <div class="operation-area">
@@ -34,6 +38,27 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+
+  const columns = [
+    { text: '1题', value: '1' },
+    { text: '2题', value: '2' },
+    { text: '3题', value: '3' },
+    { text: '4题', value: '4' },
+    { text: '5题', value: '5' },
+    { text: '6题', value: '6' },
+    { text: '7题', value: '7' },
+    { text: '8题', value: '8' },
+    { text: '9题', value: '9' },
+    { text: '10题', value: '10' },
+  ];
+  const fieldValue = ref('8题');
+  const showPicker = ref(false);
+  const selectedValues = ref(['8']);
+
+  const onConfirm = ({ selectedOptions }) => {
+    showPicker.value = false;
+    fieldValue.value = selectedOptions[0].text;
+  };
 
   const modifyMakeQuestion = () => {
     router.push({ path: '/make-question' });
