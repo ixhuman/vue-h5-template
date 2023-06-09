@@ -96,10 +96,19 @@ export const routes = [
       keepAlive: true,
     },
   },
+  // {
+  //   name: 'setReward',
+  //   path: '/set-reward',
+  //   component: () => import('/@/views/make-question/reward.vue'),
+  //   meta: {
+  //     title: '',
+  //     keepAlive: true,
+  //   },
+  // },
   {
     name: 'setReward',
     path: '/set-reward',
-    component: () => import('/@/views/make-question/reward.vue'),
+    component: () => import('/@/views/set-reward/index.vue'),
     meta: {
       title: '',
       keepAlive: true,
