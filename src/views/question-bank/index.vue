@@ -2,84 +2,62 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-hd">
-        <div class="content-area-hd-no">第 {{ makeQuestion.currentNo }} / {{ makeQuestion.questionTotal }} 题</div>
-        <div class="content-area-hd-tip">请点击你认可的选项</div>
+        <div class="content-area-hd-no">题库分类</div>
+        <div class="content-area-hd-tags">
+          <div
+            class="content-area-hd-tag"
+            v-for="(item, index) in questionBank.getTypes"
+            :class="index == questionBank.currentType ? 'content-area-hd-tag-active' : ''"
+            :key="index"
+            @click="($event) => changeType(index)"
+          >
+            {{ item }}
+          </div>
+        </div>
       </div>
       <div class="content-area-bd">
-        <div class="content-area-cell content-area-cell-title">
-          <div class="content-area-cell-tag">问</div>
-          <div class="content-area-cell-text">{{ makeQuestion.currentQuestion.title }}</div>
-        </div>
         <div
-          class="content-area-cell"
-          v-for="(item, index) of makeQuestion.currentQuestion.items"
-          :class="item.active ? 'content-area-cell-active' : ''"
-          :key="item.text"
-          @click="setAnswer(makeQuestion.currentQuestion.items, item)"
+          class="content-area-cell content-area-cell-title"
+          v-for="(item, index) in questionBank.getAllbyType"
+          :key="index"
+          @click="($event) => selectedQuestion(item)"
         >
-          <div class="content-area-cell-tag">{{ String.fromCharCode(index + 65) }}</div>
-          <div class="content-area-cell-text">{{ item.text }}</div>
+          <div class="content-area-cell-tag">问</div>
+          <div class="content-area-cell-text">{{ item.title }}</div>
         </div>
       </div>
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <div v-if="makeQuestion.currentNo > 1" class="operation-area-btn-main" @click="toPrevQuestion">上一题</div>
-        <div class="operation-area-btn-main" @click="changeQuestion">换一道题</div>
-        <div class="operation-area-btn-main" @click="editQuestion">修改本题</div>
+        <div class="operation-area-btn-main" @click="goBackMakeQuestion">返回出题页面</div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
   import router from '/@/router';
+  import { useQuestionBank } from '/@/store/questionBank';
   import { useMakeQuestion } from '/@/store/makeQuestion';
 
+  const questionBank = useQuestionBank();
   const makeQuestion = useMakeQuestion();
 
-  // 初始化10道题
-  makeQuestion.isInit || makeQuestion.getList();
+  const changeType = (index) => {
+    console.log('changeType', index);
+    questionBank.updateType(index);
+  };
 
-  // 设置答案并且设置下一题
-  const setAnswer = (items, item) => {
-    // 1.重置其它选项
-    items.forEach((element) => {
-      element.active = false;
-    });
-    // 2.设置当前选项为正确答案
-    item.active = true;
-    // 3.下一题 | 10题做完跳转
-    if (makeQuestion.currentNo >= makeQuestion.questionTotal) {
-      setReward();
-    } else {
-      setTimeout(() => {
-        makeQuestion.index++;
-      }, 200);
+  const selectedQuestion = (item) => {
+    console.log('selectedQuestion', item);
+    const res = makeQuestion.selected(item);
+    console.log('selectedQuestion', res);
+    if (res.length) {
+      router.push({ path: '/make-question' });
     }
   };
 
-  // 上一题
-  const toPrevQuestion = () => {
-    if (makeQuestion.currentNo <= 1) {
-      return;
-    } else {
-      makeQuestion.index--;
-    }
-  };
-
-  // 换一题 | 题库
-  const changeQuestion = () => {
-    router.push({ path: '/question-bank' });
-  };
-
-  // 修改题目
-  const editQuestion = () => {
-    router.push({ path: '/edit-question' });
-  };
-
-  // 设置奖励
-  const setReward = () => {
-    router.push({ path: '/set-reward' });
+  const goBackMakeQuestion = () => {
+    router.push({ path: '/make-question' });
   };
 </script>
 <style lang="scss" scoped>
@@ -95,31 +73,58 @@
     justify-content: flex-start;
     align-content: center;
   }
-
   .content-area {
     padding: 72px 72px 0;
+    margin-bottom: 240px;
+    height: 100vh;
+    overflow: scroll;
   }
 
   .content-area-hd-no {
     font-size: 36px;
-    line-height: 48px;
+    line-height: 44px;
     font-weight: bold;
   }
 
-  .content-area-hd-tip {
+  .content-area-hd-tags {
+    margin-top: 20px;
     font-size: 28px;
-    line-height: 42px;
+    line-height: 36px;
+    font-weight: bold;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .content-area-hd-tag {
+    padding: 12px 32px;
+    border: 4px solid #000000;
+    border-radius: 16px;
+    background-color: #fff;
+  }
+
+  .content-area-hd-tag-active {
+    background-color: #f8d448;
+  }
+
+  .content-area-cell {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    box-sizing: border-box;
   }
 
   .content-area-bd {
-    margin-top: 48px;
+    margin-top: 40px;
   }
 
   .content-area-cell {
     border-radius: 16px;
     background-color: #fff;
     border: 4px solid #000000;
-    padding: 24px;
+    padding: 24px 32px;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -135,14 +140,13 @@
     justify-content: center;
     align-items: center;
     font-size: 28px;
-    // line-height: 1.4;
+    line-height: 36px;
     font-weight: bold;
     background-color: #000000;
     color: #fff;
     border-radius: 8px;
-    padding: 4px 12px;
+    padding: 6px 12px;
     width: 48px;
-    height: 48px;
     text-align: center;
     box-sizing: border-box;
   }
@@ -151,9 +155,10 @@
     display: flex;
     margin-left: 16px;
     font-size: 28px;
+    line-height: 36px;
     font-weight: bold;
     color: #000000;
-    padding: 4px 2px;
+    padding: 6px;
     flex: 1;
   }
 
@@ -175,35 +180,34 @@
   }
 
   .operation-area {
+    position: fixed;
+    bottom: 0;
+    background-color: #d0d1ff;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-top: 48px;
-    padding: 72px;
+    padding: 48px 72px;
     box-sizing: border-box;
   }
 
   .operation-area-btn {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     z-index: 0;
-    gap: 16px;
+    display: flex;
+    justify-content: center;
   }
 
   .operation-area-btn-main {
-    flex: 1;
     position: relative;
-    background-color: #ffffff;
-    font-size: 34px;
-    line-height: 42px;
+    font-size: 36px;
     font-weight: bold;
-    padding: 16px 4px;
+    padding: 16px 32px;
+    background-color: #f8d448;
     border: 4px solid #000000;
     border-radius: 16px;
+    width: 100%;
     text-align: center;
   }
 

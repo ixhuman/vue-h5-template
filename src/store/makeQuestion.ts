@@ -5,17 +5,24 @@ import { useQuestionBank } from './questionBank';
 export const useMakeQuestion = defineStore('makeQuestion', {
   state: () => ({
     total: 10,
-    currentNo: 0,
+    index: 0,
     list: [] as IQuestion[],
   }),
 
   getters: {
     // 当前第几题
-    getCurrentNo(state) {
-      return state.currentNo + 1;
+    currentNo(state) {
+      return state.index + 1;
     },
-    getQuestionTotal(state) {
+    // 总题数
+    questionTotal(state) {
       return state.total;
+    },
+    currentQuestion(state) {
+      return state.list[state.index];
+    },
+    isInit(state) {
+      return state.list.length > 0 ? true : false;
     },
   },
 
@@ -56,6 +63,10 @@ export const useMakeQuestion = defineStore('makeQuestion', {
       this.list = result;
 
       return result;
+    },
+    selected(item: IQuestion) {
+      console.log(item);
+      return this.list.splice(this.index, 1, item);
     },
   },
 });

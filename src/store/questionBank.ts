@@ -1,22 +1,52 @@
 import { defineStore } from 'pinia';
 import { IQuestion, getQuestions } from '../api/question';
 
+const types = {
+  youqulinghun: '有趣灵魂',
+  chihewanle: '吃喝玩乐',
+  xingge: '性格相关',
+  jiaruruguo: '假如如果',
+  richangliaojie: '日常了解',
+  aiqing: '爱情观念',
+  sanguan: '生活三观',
+  guanyuwo: '关于我的',
+  gongzuo: '工作相关',
+};
+
 export const useQuestionBank = defineStore('questionBank', {
   state: () => ({
     all: [] as IQuestion[],
+    type: 'youqulinghun',
+    types: types,
   }),
   getters: {
-    getQues(state) {
-      console.log('111');
-      return state.all;
+    currentType(state) {
+      return state.type;
+    },
+    getAllbyType(state) {
+      const result = [] as IQuestion[];
+
+      state.all.forEach((element) => {
+        if (element.type == state.type) {
+          result.push(element);
+        }
+      });
+
+      return result;
+    },
+    getTypes(state) {
+      return state.types;
     },
   },
   actions: {
+    // 获取题库
     getAll() {
       const ques = getQuestions();
       this.all = ques;
-      console.log('aaa');
       return ques;
+    },
+    updateType(type: string) {
+      this.type = type;
     },
   },
 });
