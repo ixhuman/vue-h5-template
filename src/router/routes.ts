@@ -78,15 +78,15 @@ export const routes = [
       keepAlive: true,
     },
   },
-  {
-    name: 'questionLib',
-    path: '/question-lib',
-    component: () => import('/@/views/make-question/libs.vue'),
-    meta: {
-      title: '',
-      keepAlive: true,
-    },
-  },
+  // {
+  //   name: 'questionLib',
+  //   path: '/question-lib',
+  //   component: () => import('/@/views/make-question/libs.vue'),
+  //   meta: {
+  //     title: '',
+  //     keepAlive: true,
+  //   },
+  // },
   {
     name: 'editQuestion',
     path: '/edit-question',
