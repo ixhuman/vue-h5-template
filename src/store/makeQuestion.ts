@@ -18,9 +18,11 @@ export const useMakeQuestion = defineStore('makeQuestion', {
     questionTotal(state) {
       return state.total;
     },
+    // 当前题
     currentQuestion(state) {
       return state.list[state.index];
     },
+    // 是否初始化
     isInit(state) {
       return state.list.length > 0 ? true : false;
     },
@@ -64,8 +66,14 @@ export const useMakeQuestion = defineStore('makeQuestion', {
 
       return result;
     },
-    selected(item: IQuestion) {
-      console.log(item);
+    // 换一道题
+    replaceQuestion(item: IQuestion) {
+      console.log('replaceQuestion', item);
+      return this.list.splice(this.index, 1, item);
+    },
+    // 更新一道题
+    updateQuestion(item: IQuestion) {
+      console.log('updateQuestion', item);
       return this.list.splice(this.index, 1, item);
     },
   },

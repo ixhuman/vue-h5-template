@@ -49,7 +49,7 @@
 
   const selectedQuestion = (item) => {
     console.log('selectedQuestion', item);
-    const res = makeQuestion.selected(item);
+    const res = makeQuestion.replaceQuestion(item);
     console.log('selectedQuestion', res);
     if (res.length) {
       router.push({ path: '/make-question' });
