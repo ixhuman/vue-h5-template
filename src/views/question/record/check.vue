@@ -1,42 +1,21 @@
 <template>
   <div class="container">
     <div class="content-area">
-      <div class="content-area-cells">
-        <div class="content-area-cells-no">第 1 题 </div>
+      <div class="content-area-cells" v-for="(question, index) of checkQuestion.questions" :key="question.index">
+        <div class="content-area-cells-no">第 {{ index + 1 }} 题 </div>
         <div class="content-area-cells-mian">
           <div class="content-area-cell content-area-cell-title">
             <div class="content-area-cell-tag">问</div>
-            <div class="content-area-cell-text">我做过最多的环保活动是什么？</div>
+            <div class="content-area-cell-text">{{ question.title }}</div>
           </div>
-          <div class="content-area-cell">
-            <div class="content-area-cell-tag">A</div>
-            <div class="content-area-cell-text">光盘行动</div>
-          </div>
-        </div>
-      </div>
-      <div class="content-area-cells">
-        <div class="content-area-cells-no">第 2 题 </div>
-        <div class="content-area-cells-mian">
-          <div class="content-area-cell content-area-cell-title">
-            <div class="content-area-cell-tag">问</div>
-            <div class="content-area-cell-text">我做过最多的环保活动是什么？</div>
-          </div>
-          <div class="content-area-cell">
-            <div class="content-area-cell-tag">A</div>
-            <div class="content-area-cell-text">光盘行动</div>
-          </div>
-        </div>
-      </div>
-      <div class="content-area-cells">
-        <div class="content-area-cells-no">第 3 题 </div>
-        <div class="content-area-cells-mian">
-          <div class="content-area-cell content-area-cell-title">
-            <div class="content-area-cell-tag">问</div>
-            <div class="content-area-cell-text">我做过最多的环保活动是什么？</div>
-          </div>
-          <div class="content-area-cell">
-            <div class="content-area-cell-tag">A</div>
-            <div class="content-area-cell-text">光盘行动</div>
+          <div
+            class="content-area-cell"
+            v-for="(item, key) of question.items"
+            :key="item.text"
+            :class="item.active ? 'content-area-cell-active' : checkQuestion.answer[index] == key ? 'content-area-cell-error' : ''"
+          >
+            <div class="content-area-cell-tag">{{ String.fromCharCode(key + 65) }}</div>
+            <div class="content-area-cell-text">{{ item.text }}</div>
           </div>
         </div>
       </div>
@@ -50,6 +29,9 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useCheckQuestion } from '/@/store/checkQuestion';
+
+  const checkQuestion = useCheckQuestion();
 
   const goBack = () => {
     router.push({ path: '/answer-detail' });
@@ -104,6 +86,14 @@
 
   .content-area-cell:not(:first-child) {
     margin-top: 32px;
+  }
+
+  .content-area-cell-active {
+    background-color: #f8d448;
+  }
+
+  .content-area-cell-error {
+    background-color: #d54941;
   }
 
   .content-area-cell-bd {

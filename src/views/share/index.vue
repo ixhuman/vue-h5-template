@@ -8,12 +8,18 @@
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <div url="/pages/answer/result" class="operation-area-btn-main">去公众号查看答题情况</div>
+        <div class="operation-area-btn-main" @click="goHome">去公众号查看答题情况</div>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import router from '/@/router';
+
+  const goHome = () => {
+    router.push({ path: '/' });
+  };
+</script>
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;

@@ -7,47 +7,24 @@
         </div>
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">看看朋友们跟你的默契度</div>
-          <div class="content-area-hd-tip-a">10 人答题、5 人获奖，奖励：做一天CP</div>
+          <div class="content-area-hd-tip-a">
+            {{ answerRecord.questionRecord.answerers.length }} 人答题、 {{ answerRecord.questionRecord.winners.length }} 人获奖，奖励：
+            {{ answerRecord.questionRecord.prizeContent }}
+          </div>
         </div>
       </div>
       <div class="content-area-bd">
-        <div class="content-area-cell">
+        <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index">
           <div class="content-area-cell-hd">
-            <img src="../../../assets/avatars/4.jpg" mode="widthFix" />
+            <img :src="item.avatarUrl" mode="widthFix" />
           </div>
           <div class="content-area-cell-bd">
-            <div class="content-area-cell-bd-nickname">微信昵称</div>
-            <div class="content-area-cell-bd-link">偷看TA是怎么答的</div>
+            <div class="content-area-cell-bd-nickname">{{ item.nickname }}</div>
+            <div class="content-area-cell-bd-link" @click="viewQuestion(item.answer)">偷看TA是怎么答的</div>
           </div>
           <div class="content-area-cell-ft">
-            <div class="content-area-cell-ft-percent">100%</div>
-            <div class="content-area-cell-ft-state">未兑奖</div>
-          </div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-hd">
-            <img src="../../../assets/avatars/4.jpg" mode="widthFix" />
-          </div>
-          <div class="content-area-cell-bd">
-            <div class="content-area-cell-bd-nickname">微信昵称</div>
-            <div class="content-area-cell-bd-link">偷看TA是怎么答的</div>
-          </div>
-          <div class="content-area-cell-ft">
-            <div class="content-area-cell-ft-percent">100%</div>
-            <div class="content-area-cell-ft-state">未兑奖</div>
-          </div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-hd">
-            <img src="../../../assets/avatars/4.jpg" mode="widthFix" />
-          </div>
-          <div class="content-area-cell-bd">
-            <div class="content-area-cell-bd-nickname">微信昵称</div>
-            <div class="content-area-cell-bd-link">偷看TA是怎么答的</div>
-          </div>
-          <div class="content-area-cell-ft">
-            <div class="content-area-cell-ft-percent">100%</div>
-            <div class="content-area-cell-ft-state">未兑奖</div>
+            <div class="content-area-cell-ft-percent">{{ item.score }}%</div>
+            <div class="content-area-cell-ft-state">{{ !item.isPass ? '未获奖' : item.isRedeem ? '已兑奖' : '未兑奖' }}</div>
           </div>
         </div>
       </div>
@@ -55,21 +32,38 @@
     <div class="operation-area">
       <div class="operation-area-btn">
         <div class="operation-area-btn-main" @click="goBack">返回</div>
-        <div class="operation-area-btn-main" @click="checkQuestion">查看题目</div>
-        <div class="operation-area-btn-main bg-f8d448">邀请答题</div>
+        <div class="operation-area-btn-main" @click="viewQuestion([])">查看题目</div>
+        <div class="operation-area-btn-main bg-f8d448" @click="inviteQuestion">邀请答题</div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useAnswerRecord } from '/@/store/answerRecord';
+  import { useCheckQuestion } from '/@/store/checkQuestion';
+
+  const answerRecord = useAnswerRecord();
+  answerRecord.getList();
+
+  const checkQuestion = useCheckQuestion();
 
   const goBack = () => {
+    // 重置
+    // answerRecord.$reset();
     router.push({ path: '/my-question-record' });
   };
 
-  const checkQuestion = () => {
+  const viewQuestion = (answer: number[]) => {
+    checkQuestion.$patch({
+      answer,
+      questions: answerRecord.questionRecord.questions,
+    });
     router.push({ path: '/check-question' });
+  };
+
+  const inviteQuestion = () => {
+    router.push({ path: '/share' });
   };
 </script>
 <style lang="scss" scoped>

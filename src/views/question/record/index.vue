@@ -1,26 +1,12 @@
 <template>
   <div class="container">
     <div class="content-area">
-      <div class="content-area-cell">
+      <div class="content-area-cell" v-for="(item, index) in questionRecord.list" :key="index" @click="detail(item)">
         <div class="content-area-cell-bd">
-          <div class="content-area-cell-title content-area-cell-title-active">奖励：做一天CP</div>
-          <div class="content-area-cell-desc"> 10人答题、5人获奖 </div>
+          <div class="content-area-cell-title content-area-cell-title-active">奖励：{{ item.prizeContent }}</div>
+          <div class="content-area-cell-desc"> {{ item.answerers.length }}人答题、{{ item.winners.length }}人获奖 </div>
         </div>
-        <div class="content-area-cell-ft icon-arrow"> </div>
-      </div>
-      <div class="content-area-cell">
-        <div class="content-area-cell-bd">
-          <div class="content-area-cell-title content-area-cell-title-active">奖励：做一天CP</div>
-          <div class="content-area-cell-desc"> 10人答题、5人获奖 </div>
-        </div>
-        <div class="content-area-cell-ft icon-arrow"> </div>
-      </div>
-      <div class="content-area-cell" @click="detail">
-        <div class="content-area-cell-bd">
-          <div class="content-area-cell-title content-area-cell-title-active">奖励：做一天CP</div>
-          <div class="content-area-cell-desc"> 10人答题、5人获奖 </div>
-        </div>
-        <div class="content-area-cell-ft icon-arrow"> </div>
+        <div class="content-area-cell-ft icon-arrow"></div>
       </div>
     </div>
     <div class="operation-area">
@@ -32,13 +18,24 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useAnswerRecord } from '/@/store/answerRecord';
+  import { useQuestionRecord } from '/@/store/questionRecord';
+  import { IQuesitonRecord } from '/@/api/questionRecord';
+
+  const questionRecord = useQuestionRecord();
+  questionRecord.getList();
+
+  const answerRecord = useAnswerRecord();
 
   const goHome = () => {
     router.push({ path: '/' });
   };
 
-  const detail = () => {
-    router.push({ path: '/answer-detail' });
+  const detail = (itme: IQuesitonRecord) => {
+    console.log('itme', itme);
+    answerRecord.questionRecord = itme;
+
+    router.push({ path: `/answer-detail` });
   };
 </script>
 <style lang="scss" scoped>
