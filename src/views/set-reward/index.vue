@@ -82,6 +82,9 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useReward } from '/@/store/reward';
+
+  const reward = useReward();
 
   const prizeColumns = [
     { text: '自定义奖励', value: '0' },
@@ -116,6 +119,7 @@
   const onPrizeConfirm = ({ selectedOptions }) => {
     prizeShowPicker.value = false;
     prizeFieldValue.value = selectedOptions[0].text;
+    prizeSelectedValues.value = selectedOptions[0].value;
     if (selectedOptions[0].value == 0) {
       isShowCustomReward.value = true;
     } else {
@@ -137,6 +141,7 @@
   const dialogConfirm = () => {
     if (fieldValue.value) {
       prizeFieldValue.value = prizeColumns[0].text;
+      prizeSelectedValues.value = [prizeColumns[0].value];
       isShowCustomReward.value = true;
       customRewardFieldValue.value = fieldValue.value;
     }
@@ -170,6 +175,14 @@
   };
 
   const confirmMakeQuestion = () => {
+    const prizeIndex = +prizeSelectedValues.value[0];
+
+    // 保存数据
+    reward.$patch({
+      prizeContent: prizeIndex > 0 ? prizeFieldValue.value : customRewardFieldValue.value, // 奖励内容
+      prizeIndex,
+      requireCorrectNumber: +answerSelectedValues.value, // 至少答对
+    });
     router.push({ path: '/share' });
   };
 </script>
