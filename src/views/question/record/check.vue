@@ -62,7 +62,7 @@
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
-    background-image: url('../../assets/bg.jpg');
+    background-image: url('../../../assets/bg.jpg');
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
