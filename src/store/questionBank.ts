@@ -20,8 +20,9 @@ export const useQuestionBank = defineStore('questionBank', {
     types: types,
   }),
   getters: {
-    currentType(state) {
-      return state.type;
+    // 是否初始化
+    isInit(state) {
+      return state.all.length > 0 ? true : false;
     },
     getAllbyType(state) {
       const result = [] as IQuestion[];
@@ -33,9 +34,6 @@ export const useQuestionBank = defineStore('questionBank', {
       });
 
       return result;
-    },
-    getTypes(state) {
-      return state.types;
     },
   },
   actions: {

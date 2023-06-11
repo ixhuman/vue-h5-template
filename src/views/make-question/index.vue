@@ -2,7 +2,7 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-hd">
-        <div class="content-area-hd-no">第 {{ makeQuestion.currentNo }} / {{ makeQuestion.questionTotal }} 题</div>
+        <div class="content-area-hd-no">第 {{ makeQuestion.currentNo }} / {{ makeQuestion.total }} 题</div>
         <div class="content-area-hd-tip">请点击你认可的选项</div>
       </div>
       <div class="content-area-bd">
@@ -49,7 +49,7 @@
     // 2.设置当前选项为正确答案
     item.active = true;
     // 3.下一题 | 10题做完跳转
-    if (makeQuestion.currentNo >= makeQuestion.questionTotal) {
+    if (makeQuestion.currentNo >= makeQuestion.total) {
       setReward();
     } else {
       setTimeout(() => {

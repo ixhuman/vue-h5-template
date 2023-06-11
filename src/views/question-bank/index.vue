@@ -6,8 +6,8 @@
         <div class="content-area-hd-tags">
           <div
             class="content-area-hd-tag"
-            v-for="(item, index) in questionBank.getTypes"
-            :class="index == questionBank.currentType ? 'content-area-hd-tag-active' : ''"
+            v-for="(item, index) in questionBank.types"
+            :class="index == questionBank.type ? 'content-area-hd-tag-active' : ''"
             :key="index"
             @click="($event) => changeType(index)"
           >
@@ -40,6 +40,9 @@
   import { useMakeQuestion } from '/@/store/makeQuestion';
 
   const questionBank = useQuestionBank();
+  // 初始化题库
+  questionBank.isInit || questionBank.getAll();
+
   const makeQuestion = useMakeQuestion();
 
   const changeType = (index) => {
@@ -49,7 +52,8 @@
 
   const selectedQuestion = (item) => {
     console.log('selectedQuestion', item);
-    const res = makeQuestion.replaceQuestion(item);
+    const res = makeQuestion.updateQuestion(item);
+
     console.log('selectedQuestion', res);
     if (res.length) {
       router.push({ path: '/make-question' });
