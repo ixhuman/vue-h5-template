@@ -37,7 +37,7 @@ const answerRecords: IAnswerRecord[] = [
     answer: [1, 2, 1, 2, 2, 2, 2, 1, 1, 2],
     result: [1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
     score: 30,
-    isPass: true,
+    isPass: false,
     isRedeem: false,
   },
 ];

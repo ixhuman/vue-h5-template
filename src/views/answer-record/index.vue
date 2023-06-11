@@ -2,46 +2,14 @@
   <!--答题/获奖记录-->
   <div class="container">
     <div class="content-area">
-      <div class="content-area-cell">
+      <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index">
         <div class="content-area-cell-bd">
-          <div class="content-area-cell-title content-area-cell-title-active">奖励：做一天CP</div>
+          <div class="content-area-cell-title" :class="item.isPass ? 'content-area-cell-title-active' : ''">{{
+            item.isPass ? '奖励：' + item.nickname : '未获奖，去重新答题'
+          }}</div>
           <div class="content-area-cell-desc">
             <div class="content-area-cell-desc-time">09-05 16:52</div>
-            <div class="content-area-cell-desc-result">未兑奖</div>
-          </div>
-        </div>
-        <div class="content-area-cell-ft">
-          <div class="content-area-cell-ft-img">
-            <img class="content-area-cell-ft-avatar" src="../../assets/avatars/2.jpg" mode="widthFix" />
-          </div>
-          <div class="content-area-cell-ft-img">
-            <img src="../../assets/avatars/3.jpg" mode="widthFix" />
-          </div>
-        </div>
-      </div>
-      <div class="content-area-cell">
-        <div class="content-area-cell-bd">
-          <div class="content-area-cell-title content-area-cell-title-active">奖励：做一天CP</div>
-          <div class="content-area-cell-desc">
-            <div class="content-area-cell-desc-time">09-05 16:52</div>
-            <div class="content-area-cell-desc-result">已兑奖</div>
-          </div>
-        </div>
-        <div class="content-area-cell-ft">
-          <div class="content-area-cell-ft-img">
-            <img class="content-area-cell-ft-avatar" src="../../assets/avatars/2.jpg" mode="widthFix" />
-          </div>
-          <div class="content-area-cell-ft-img">
-            <img src="../../assets/avatars/3.jpg" mode="widthFix" />
-          </div>
-        </div>
-      </div>
-      <div class="content-area-cell">
-        <div class="content-area-cell-bd">
-          <div class="content-area-cell-title">未获奖，去重新答题</div>
-          <div class="content-area-cell-desc">
-            <div class="content-area-cell-desc-time">09-05 16:52</div>
-            <div class="content-area-cell-desc-result">未兑奖</div>
+            <div class="content-area-cell-desc-result">{{ !item.isPass ? '未获奖' : item.isRedeem ? '已兑奖' : '未兑奖' }}</div>
           </div>
         </div>
         <div class="content-area-cell-ft">
@@ -63,6 +31,10 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useAnswerRecord } from '/@/store/answerRecord';
+
+  const answerRecord = useAnswerRecord();
+  answerRecord.getList();
 
   const goHome = () => {
     router.push({ path: '/' });
