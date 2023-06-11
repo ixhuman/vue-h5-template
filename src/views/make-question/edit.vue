@@ -28,7 +28,7 @@
       </div>
     </div>
   </div>
-  <van-dialog v-model:show="dialogShow" title="标题" show-cancel-button @confirm="dialogConfirm">
+  <van-dialog v-model:show="dialogShow" title="修改" show-cancel-button @confirm="dialogConfirm">
     <van-field v-model="fieldValue" placeholder="请输入" />
   </van-dialog>
 </template>

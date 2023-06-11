@@ -8,56 +8,65 @@
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">默契好友才能获得奖励</div>
         </div>
+        <div class="content-area-hd-cr">
+          <div class="content-area-hd-cr-a" @click="addCustomReward">自定义答题奖励</div>
+        </div>
       </div>
       <div class="content-area-bd">
         <!-- <div class="content-area-cell">
           <div class="content-area-cell-hd">答题奖励</div>
           <div class="content-area-cell-ft icon-arrow"> 自定义奖励 </div>
         </div> -->
-        <van-field
-          v-model="prizeFieldValue"
-          is-link
-          readonly
-          label="答题奖励"
-          input-align="right"
-          placeholder="请选择"
-          @click="prizeShowPicker = true"
-        />
-        <van-popup v-model:show="prizeShowPicker" round position="bottom">
-          <van-picker v-model="prizeSelectedValues" :columns="prizeColumns" @cancel="prizeShowPicker = false" @confirm="onPrizeConfirm" />
-        </van-popup>
+        <div class="content-area-cell">
+          <van-field
+            v-model="prizeFieldValue"
+            is-link
+            readonly
+            label="答题奖励"
+            input-align="right"
+            placeholder="请选择"
+            @click="prizeShowPicker = true"
+          />
+          <van-popup v-model:show="prizeShowPicker" round position="bottom">
+            <van-picker v-model="prizeSelectedValues" :columns="prizeColumns" @cancel="prizeShowPicker = false" @confirm="onPrizeConfirm" />
+          </van-popup>
+        </div>
         <!-- <div class="content-area-cell">
           <div class="content-area-cell-hd">自定义奖励</div>
           <div class="content-area-cell-ft">点击填写</div>
         </div> -->
-        <van-field
-          v-if="isShowCustomReward"
-          v-model="customRewardFieldValue"
-          label="自定义奖励"
-          input-align="right"
-          placeholder="点击填写"
-        />
+        <div class="content-area-cell">
+          <van-field
+            v-if="isShowCustomReward"
+            v-model="customRewardFieldValue"
+            label="自定义奖励"
+            input-align="right"
+            placeholder="点击填写"
+          />
+        </div>
         <!-- <div class="content-area-cell">
           <div class="content-area-cell-hd">至少答对</div>
           <div class="content-area-cell-ft icon-arrow">8题</div>
         </div> -->
-        <van-field
-          v-model="answerFieldValue"
-          is-link
-          readonly
-          label="至少答对"
-          input-align="right"
-          placeholder="请选择"
-          @click="answerShowPicker = true"
-        />
-        <van-popup v-model:show="answerShowPicker" round position="bottom">
-          <van-picker
-            v-model="answerSelectedValues"
-            :columns="answerColumns"
-            @cancel="answerShowPicker = false"
-            @confirm="onAnswerConfirm"
+        <div class="content-area-cell">
+          <van-field
+            v-model="answerFieldValue"
+            is-link
+            readonly
+            label="至少答对"
+            input-align="right"
+            placeholder="请选择"
+            @click="answerShowPicker = true"
           />
-        </van-popup>
+          <van-popup v-model:show="answerShowPicker" round position="bottom">
+            <van-picker
+              v-model="answerSelectedValues"
+              :columns="answerColumns"
+              @cancel="answerShowPicker = false"
+              @confirm="onAnswerConfirm"
+            />
+          </van-popup>
+        </div>
       </div>
     </div>
     <div class="operation-area">
@@ -67,11 +76,15 @@
       </div>
     </div>
   </div>
+  <van-dialog v-model:show="dialogShow" title="自定义答题奖励" show-cancel-button @confirm="dialogConfirm">
+    <van-field v-model="fieldValue" placeholder="请输入" />
+  </van-dialog>
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
 
   const prizeColumns = [
+    { text: '自定义奖励', value: '0' },
     { text: '💞做一天CP', value: '1' },
     { text: '🎁送你一个礼物', value: '2' },
     { text: '🍺请你喝一杯奶茶', value: '3' },
@@ -94,7 +107,6 @@
     { text: '🍗陪你组队吃鸡', value: '20' },
     { text: '🥂和你一起吃饭', value: '21' },
     { text: '😆陪你过六一', value: '22' },
-    { text: '自定义奖励', value: '23' },
   ];
 
   const prizeFieldValue = ref('💞做一天CP');
@@ -104,7 +116,7 @@
   const onPrizeConfirm = ({ selectedOptions }) => {
     prizeShowPicker.value = false;
     prizeFieldValue.value = selectedOptions[0].text;
-    if (selectedOptions[0].value == 23) {
+    if (selectedOptions[0].value == 0) {
       isShowCustomReward.value = true;
     } else {
       isShowCustomReward.value = false;
@@ -114,6 +126,22 @@
   // 自定义奖励
   const isShowCustomReward = ref(false);
   const customRewardFieldValue = ref('');
+  const dialogShow = ref(false);
+  const fieldValue = ref('');
+
+  const addCustomReward = () => {
+    dialogShow.value = true;
+  };
+
+  // 确认输入
+  const dialogConfirm = () => {
+    if (fieldValue.value) {
+      prizeFieldValue.value = prizeColumns[0].text;
+      isShowCustomReward.value = true;
+      customRewardFieldValue.value = fieldValue.value;
+    }
+    fieldValue.value = '';
+  };
 
   const answerColumns = [
     { text: '1题', value: '1' },
@@ -202,6 +230,17 @@
     font-weight: bold;
   }
 
+  .content-area-hd-cr {
+    width: 100%;
+    text-align: right;
+    margin-top: 48px;
+    margin-bottom: 24px;
+  }
+
+  .content-area-hd-cr-a {
+    text-decoration: underline;
+  }
+
   .content-area-bd {
     flex: 1;
     width: 100%;
@@ -212,29 +251,29 @@
     gap: 32px;
   }
 
-  .content-area-cell {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 32px;
-    line-height: 48px;
-    font-size: 34px;
-    font-weight: bold;
-    border-radius: 16px;
-    background-color: #fff;
-    border: 4px solid #000000;
-    width: 100%;
-    box-sizing: border-box;
-  }
+  // .content-area-cell {
+  //   display: flex;
+  //   justify-content: space-between;
+  //   align-items: center;
+  //   padding: 32px;
+  //   line-height: 48px;
+  //   font-size: 34px;
+  //   font-weight: bold;
+  //   border-radius: 16px;
+  //   background-color: #fff;
+  //   border: 4px solid #000000;
+  //   width: 100%;
+  //   box-sizing: border-box;
+  // }
 
-  .content-area-cell-ft {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 48px;
-    vertical-align: middle;
-    color: #0053ff;
-  }
+  // .content-area-cell-ft {
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   height: 48px;
+  //   vertical-align: middle;
+  //   color: #0053ff;
+  // }
 
   .icon-arrow {
     padding-right: 40px;
@@ -311,7 +350,7 @@
     background-color: #f8d448;
   }
 
-  .van-field {
+  .content-area-cell .van-field {
     border-radius: 16px;
     border: 4px solid #000000;
   }
