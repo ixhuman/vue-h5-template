@@ -11,13 +11,13 @@
         </div> -->
       <div class="content-area-cell" v-for="(item, index) of state.cloneQuestion.items" :key="item.text" :index="index">
         <div class="content-area-cell-hd" @click="deleteOption(index)">
-          <img src="../../../assets/minus.png" mode="widthFix" />
+          <img src="../../assets/minus.png" mode="widthFix" />
         </div>
         <div class="content-area-cell-bd" @click="editOption(index)">{{ item.text }}</div>
       </div>
       <div class="content-area-cell" @click="addOption()">
         <div class="content-area-cell-hd">
-          <img src="../../../assets/plus.png" mode="widthFix" />
+          <img src="../../assets/plus.png" mode="widthFix" />
         </div>
         <div class="content-area-cell-bd" style="color: #0053ff">添加选项</div>
       </div>
@@ -120,7 +120,7 @@
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
-    background-image: url('../../../assets/bg.jpg');
+    background-image: url('../../assets/bg.jpg');
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

@@ -25,7 +25,7 @@
   };
 
   const myQuestionRecord = () => {
-    router.push({ path: 'my-question-record' });
+    router.push({ path: 'question-record' });
   };
 
   const answerRecord = () => {

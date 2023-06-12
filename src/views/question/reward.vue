@@ -3,7 +3,7 @@
     <div class="content-area">
       <div class="content-area-hd">
         <div class="content-area-hd-user-avatar">
-          <img src="../../../assets/avatars/4.jpg" mode="widthFix" />
+          <img src="../../assets/avatars/4.jpg" mode="widthFix" />
         </div>
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">默契好友才能获得奖励</div>
@@ -193,7 +193,7 @@
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
-    background-image: url('../../../assets/bg.jpg');
+    background-image: url('../../assets/bg.jpg');
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

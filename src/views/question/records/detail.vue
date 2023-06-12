@@ -51,7 +51,7 @@
   const goBack = () => {
     // 重置
     // answerRecord.$reset();
-    router.push({ path: '/my-question-record' });
+    router.push({ path: '/question-record' });
   };
 
   const viewQuestion = (answer: number[]) => {
