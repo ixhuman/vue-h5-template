@@ -2,7 +2,7 @@
   <!--答题/获奖记录-->
   <div class="container">
     <div class="content-area">
-      <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index">
+      <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index" @click="reanswerQuestion">
         <div class="content-area-cell-bd">
           <div class="content-area-cell-title" :class="item.isPass ? 'content-area-cell-title-active' : ''">{{
             item.isPass ? '奖励：' + item.nickname : '未获奖，去重新答题'
@@ -24,7 +24,7 @@
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <navigator url="/pages/home/index" class="operation-area-btn-main" @click="goHome">返回首页</navigator>
+        <div class="operation-area-btn-main" @click="goHome">返回首页</div>
       </div>
     </div>
   </div>
@@ -35,6 +35,10 @@
 
   const answerRecord = useAnswerRecord();
   answerRecord.getList();
+
+  const reanswerQuestion = () => {
+    router.push({ path: '/answer-question' });
+  };
 
   const goHome = () => {
     router.push({ path: '/' });

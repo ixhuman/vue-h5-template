@@ -2,44 +2,75 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-hd">
-        <div class="content-area-hd-no">第 1 / 10 题</div>
+        <div class="content-area-hd-no">第 {{ answerQuestion.currentNo }} / {{ answerQuestion.total }} 题</div>
         <div class="content-area-hd-tip">请点击你认可的选项</div>
       </div>
       <div class="content-area-bd">
         <div class="content-area-cell content-area-cell-title">
           <div class="content-area-cell-tag">问</div>
-          <div class="content-area-cell-text">我做过最多的环保活动是什么？</div>
+          <div class="content-area-cell-text">{{ answerQuestion.currentQuestion.title }}</div>
         </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-tag">A</div>
-          <div class="content-area-cell-text">光盘行动</div>
-        </div>
-        <div class="content-area-cell content-area-cell-active" @click="answerResult">
-          <div class="content-area-cell-tag">B</div>
-          <div class="content-area-cell-text">选中后变黄，然后自动转下一题</div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-tag">C</div>
-          <div class="content-area-cell-text">二次利用</div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-tag">D</div>
-          <div class="content-area-cell-text">节约用电</div>
+        <div
+          class="content-area-cell"
+          v-for="(item, index) of answerQuestion.currentQuestion.items"
+          :key="item.text"
+          :class="index == answerQuestion.answer[answerQuestion.index] ? 'content-area-cell-active' : ''"
+          @click="nextQuestion(item, index)"
+        >
+          <div class="content-area-cell-tag">{{ String.fromCharCode(index + 65) }}</div>
+          <div class="content-area-cell-text">{{ item.text }}</div>
         </div>
       </div>
     </div>
     <div class="operation-area">
       <div class="operation-area-btn">
-        <div class="operation-area-btn-main" @click="resetAnswer">重答上一题</div>
+        <div class="operation-area-btn-main" @click="prevQuestion">重答上一题</div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useAnswerQuestion } from '/@/store/answerQuestion';
 
-  const resetAnswer = () => {
-    router.push({ path: '/answering' });
+  const answerQuestion = useAnswerQuestion();
+
+  // 重答上一题
+  const prevQuestion = () => {
+    if (answerQuestion.currentNo <= 1) {
+      return;
+    } else {
+      setTimeout(() => {
+        answerQuestion.index--;
+      }, 200);
+    }
+  };
+
+  // 下一题
+  const nextQuestion = (
+    item: {
+      text: string;
+      active: boolean;
+    },
+    index: number,
+  ) => {
+    // 答案
+    answerQuestion.answer[answerQuestion.index] = index;
+    // 答题结果
+    answerQuestion.result[answerQuestion.index] = item.active ? 1 : 0;
+
+    if (answerQuestion.currentNo >= answerQuestion.total) {
+      // 计算结果
+      answerQuestion.getResult();
+
+      // 答完题跳转到结果页面
+      answerResult();
+    } else {
+      // 下一道题
+      setTimeout(() => {
+        answerQuestion.index++;
+      }, 200);
+    }
   };
 
   const answerResult = () => {
@@ -98,7 +129,7 @@
   }
 
   .content-area-cell:not(:first-child) {
-    margin-top: 44px;
+    margin-top: 40px;
   }
 
   .content-area-cell-tag {

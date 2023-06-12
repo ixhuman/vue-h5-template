@@ -19,6 +19,7 @@ export const useQuestionBank = defineStore('questionBank', {
     type: 'youqulinghun',
     types: types,
   }),
+
   getters: {
     // 是否初始化
     isInit(state) {
@@ -36,6 +37,7 @@ export const useQuestionBank = defineStore('questionBank', {
       return result;
     },
   },
+
   actions: {
     // 获取题库
     getAll() {

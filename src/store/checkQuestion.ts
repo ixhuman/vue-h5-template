@@ -6,6 +6,8 @@ export const useCheckQuestion = defineStore('checkQuestion', {
     questions: {} as IQuestion[],
     answer: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
   }),
+
   getters: {},
+
   actions: {},
 });

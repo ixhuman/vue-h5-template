@@ -13,11 +13,11 @@
       <div class="content-area-bd">
         <div class="content-area-cell">
           <div>答题奖励</div>
-          <div style="color: #0053ff">{{ prizeContent }}</div>
+          <div style="color: #0053ff">{{ answerQuestion.prizeContent }}</div>
         </div>
         <div class="content-area-cell">
           <div>至少答对</div>
-          <div style="color: #0053ff">{{ passScore }}题</div>
+          <div style="color: #0053ff">{{ answerQuestion.passScore }}题</div>
         </div>
       </div>
     </div>
@@ -30,9 +30,12 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useAnswerQuestion } from '/@/store/answerQuestion';
+
+  const answerQuestion = useAnswerQuestion();
 
   const startAnswering = () => {
-    router.push({ path: '/answering' });
+    router.push({ path: '/doing-question' });
   };
 </script>
 <style lang="scss">

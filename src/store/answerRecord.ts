@@ -7,7 +7,9 @@ export const useAnswerRecord = defineStore('answerRecord', {
     questionRecord: {} as IQuesitonRecord,
     list: [] as IAnswerRecord[],
   }),
+
   getters: {},
+
   actions: {
     getList() {
       const res = getAnswerRecords();

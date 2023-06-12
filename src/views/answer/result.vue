@@ -7,38 +7,61 @@
         </div>
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">快来找我兑奖吧</div>
-          <div class="content-area-hd-tip-m">你答对了 10/10 题，默契度 100%</div>
+          <div class="content-area-hd-tip-m">
+            你答对了 {{ answerQuestion.getCorrectNumber }}/{{ answerQuestion.total }} 题，默契度 {{ answerQuestion.getScore }}%
+          </div>
         </div>
       </div>
       <div class="content-area-bd">
         <div class="content-area-cell">
           <div class="content-area-cell-main">
-            <div class="content-area-cell-main-title content-area-cell-main-title-active">奖励：做一天CP</div>
+            <div class="content-area-cell-main-title content-area-cell-main-title-active">奖励：{{ answerQuestion.prizeContent }}</div>
             <div class="content-area-cell-main-desc"> 请找出题人兑奖后再确认 </div>
           </div>
-          <div class="content-area-cell-btn">确认兑奖</div>
-        </div>
-        <div class="content-area-cell">
-          <div class="content-area-cell-main">
-            <div class="content-area-cell-main-title content-area-cell-main-title-active">确认兑奖后的样式</div>
-            <div class="content-area-cell-main-desc"> 请找出题人兑奖后再确认 </div>
+          <div
+            class="content-area-cell-btn"
+            :class="!answerQuestion.isPass ? 'content-area-cell-main-title-not-active' : ''"
+            v-if="!answerQuestion.isPass"
+            >未中奖</div
+          >
+          <div class="content-area-cell-btn" :class="answerQuestion.isRedeem ? 'content-area-cell-main-title-active' : ''" v-else>
+            <template v-if="answerQuestion.isRedeem">已兑奖</template>
+            <template v-else>确认兑奖</template>
           </div>
-          <div class="content-area-cell-btn content-area-cell-btn"> 已兑奖 </div>
         </div>
       </div>
     </div>
     <div class="operation-area">
-      <div class="operation-area-btn">
-        <div class="operation-area-btn-main">再来一次机会，重新答题</div>
+      <div class="operation-area-btn" v-if="!answerQuestion.isPass">
+        <div class="operation-area-btn-main" @click="reanswerQuestion">再来一次机会，重新答题</div>
       </div>
       <div class="operation-area-btn-sub">
-        <div class="operation-area-btn-sub-main">返回</div>
-        <div class="operation-area-btn-sub-main">我也要出题</div>
+        <div class="operation-area-btn-sub-main" @click="goHome">返回</div>
+        <div class="operation-area-btn-sub-main" @click="makeQuestion">我也要出题</div>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import router from '/@/router';
+  import { useAnswerQuestion } from '/@/store/answerQuestion';
+
+  const answerQuestion = useAnswerQuestion();
+
+  const goHome = () => {
+    router.push({ path: '/' });
+  };
+
+  // 重新答题
+  const reanswerQuestion = () => {
+    answerQuestion.$reset();
+    router.push({ path: '/doing-question' });
+  };
+
+  const makeQuestion = () => {
+    router.push({ path: '/make-question' });
+  };
+</script>
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;
@@ -141,10 +164,6 @@
     font-weight: bold;
   }
 
-  .content-area-cell-main-title-active {
-    color: #0053ff;
-  }
-
   .content-area-cell-main-desc {
     margin-top: 8px;
     font-size: 28px;
@@ -163,6 +182,15 @@
     justify-content: center;
     align-items: center;
     min-width: 160px;
+  }
+
+  .content-area-cell-main-title-active {
+    color: #0053ff;
+  }
+  .content-area-cell-main-title-not-active {
+    background-color: #fff;
+    border: 4px solid #c6c6c6;
+    color: #c6c6c6;
   }
 
   .operation-area {
