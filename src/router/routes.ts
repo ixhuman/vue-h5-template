@@ -63,7 +63,7 @@ export const routes = [
   {
     name: 'makeQuestion',
     path: '/make-question',
-    component: () => import('/@/views/question/make/index.vue'),
+    component: () => import('/@/views/question/make.vue'),
     meta: {
       title: '',
       keepAlive: true,
@@ -81,7 +81,7 @@ export const routes = [
   {
     name: 'editQuestion',
     path: '/edit-question',
-    component: () => import('/@/views/question/make/edit.vue'),
+    component: () => import('/@/views/question/edit.vue'),
     meta: {
       title: '',
       keepAlive: true,
@@ -90,16 +90,16 @@ export const routes = [
   {
     name: 'setReward',
     path: '/set-reward',
-    component: () => import('/@/views/question/make/reward.vue'),
+    component: () => import('/@/views/question/reward.vue'),
     meta: {
       title: '',
       keepAlive: true,
     },
   },
   {
-    name: 'myQuestion',
-    path: '/my-question-record',
-    component: () => import('/@/views/question/record/index.vue'),
+    name: 'questionRecord',
+    path: '/question-record',
+    component: () => import('/@/views/question/record.vue'),
     meta: {
       title: '',
       keepAlive: true,
@@ -108,7 +108,7 @@ export const routes = [
   {
     name: 'answerDetail',
     path: '/answer-detail',
-    component: () => import('/@/views/question/record/detail.vue'),
+    component: () => import('/@/views/question/records/detail.vue'),
     meta: {
       title: '',
       keepAlive: true,
@@ -117,7 +117,7 @@ export const routes = [
   {
     name: 'checkQuestion',
     path: '/check-question',
-    component: () => import('/@/views/question/record/check.vue'),
+    component: () => import('/@/views/question/records/check.vue'),
     meta: {
       title: '',
       keepAlive: true,
@@ -135,25 +135,25 @@ export const routes = [
   {
     name: 'answerRecord',
     path: '/answer-record',
-    component: () => import('/@/views/answer-record/index.vue'),
+    component: () => import('/@/views/answer/record.vue'),
     meta: {
       title: '',
       keepAlive: true,
     },
   },
   {
-    name: 'answer',
-    path: '/answer',
-    component: () => import('/@/views/answer-question/index.vue'),
+    name: 'answerQuestion',
+    path: '/answer-question',
+    component: () => import('/@/views/answer/index.vue'),
     meta: {
       title: '',
       keepAlive: true,
     },
   },
   {
-    name: 'answering',
-    path: '/answering',
-    component: () => import('/@/views/answer-question/doing.vue'),
+    name: 'doingQuestion',
+    path: '/doing-question',
+    component: () => import('/@/views/answer/doing.vue'),
     meta: {
       title: '',
       keepAlive: true,
@@ -162,7 +162,7 @@ export const routes = [
   {
     name: 'answerResult',
     path: '/answer-result',
-    component: () => import('/@/views/answer-question/result.vue'),
+    component: () => import('/@/views/answer/result.vue'),
     meta: {
       title: '',
       keepAlive: true,
