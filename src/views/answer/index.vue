@@ -38,7 +38,7 @@
     router.push({ path: '/doing-question' });
   };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;
     height: 100vh;

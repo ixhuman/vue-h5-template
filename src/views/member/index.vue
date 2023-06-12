@@ -29,7 +29,7 @@
   };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .avatar-wrap {
     display: flex;
     margin: 10px 40px;

@@ -51,7 +51,7 @@
     setLang(type);
   };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .header {
     display: flex;
     justify-content: center;
