@@ -20,6 +20,50 @@
 <script lang="ts" setup>
   import router from '/@/router';
 
+  var urlSearch = new URLSearchParams(location.search);
+  var accessToken = urlSearch.get('access_token');
+  var refreshToken = urlSearch.get('refresh_token');
+
+  (async () => {
+    interface obj {
+      [idx: string]: any;
+    }
+
+    let checkLoginOptions: obj = {
+      provider: 'OfficialAccount',
+      appid: 'wxd4832b465764a784',
+    };
+
+    if (urlSearch.get('oauthredirect') === '1') {
+      checkLoginOptions.accessToken = accessToken;
+      checkLoginOptions.refreshToken = refreshToken;
+    }
+    const result = await window.cloud.checkLogin(checkLoginOptions);
+    console.log(`checkLogin.result: `, result);
+    if (result.errCode === 0 && result.loggedIn) {
+      var c = new window.cloud.Cloud({
+        appid: 'wxd4832b465764a784',
+        // identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
+
+      await c.init();
+
+      const res = await c.callFunction({
+        name: 'createOrFirstUser',
+      });
+      console.log('createOrFirstUser.res', res);
+    } else {
+      window.cloud.startLogin({
+        provider: 'OfficialAccount',
+        appid: 'wxd4832b465764a784',
+        scope: 'snsapi_base',
+        redirectUri: 'https://env-prod-7geqkmur35ee26ed-1305852262.tcloudbaseapp.com/index',
+      });
+    }
+  })();
+
   const startMakeQuestion = () => {
     router.push({ path: 'make-question' });
   };
