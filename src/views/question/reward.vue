@@ -13,10 +13,6 @@
         </div>
       </div>
       <div class="content-area-bd">
-        <!-- <div class="content-area-cell">
-          <div class="content-area-cell-hd">答题奖励</div>
-          <div class="content-area-cell-ft icon-arrow"> 自定义奖励 </div>
-        </div> -->
         <div class="content-area-cell">
           <van-field
             v-model="prizeFieldValue"
@@ -31,10 +27,6 @@
             <van-picker v-model="prizeSelectedValues" :columns="prizeColumns" @cancel="prizeShowPicker = false" @confirm="onPrizeConfirm" />
           </van-popup>
         </div>
-        <!-- <div class="content-area-cell">
-          <div class="content-area-cell-hd">自定义奖励</div>
-          <div class="content-area-cell-ft">点击填写</div>
-        </div> -->
         <div class="content-area-cell">
           <van-field
             v-if="isShowCustomReward"
@@ -44,26 +36,22 @@
             placeholder="点击填写"
           />
         </div>
-        <!-- <div class="content-area-cell">
-          <div class="content-area-cell-hd">至少答对</div>
-          <div class="content-area-cell-ft icon-arrow">8题</div>
-        </div> -->
         <div class="content-area-cell">
           <van-field
-            v-model="answerFieldValue"
+            v-model="correctFieldValue"
             is-link
             readonly
             label="至少答对"
             input-align="right"
             placeholder="请选择"
-            @click="answerShowPicker = true"
+            @click="correctShowPicker = true"
           />
-          <van-popup v-model:show="answerShowPicker" round position="bottom">
+          <van-popup v-model:show="correctShowPicker" round position="bottom">
             <van-picker
-              v-model="answerSelectedValues"
-              :columns="answerColumns"
-              @cancel="answerShowPicker = false"
-              @confirm="onAnswerConfirm"
+              v-model="correctSelectedValues"
+              :columns="correctColumns"
+              @cancel="correctShowPicker = false"
+              @confirm="onCorrectConfirm"
             />
           </van-popup>
         </div>
@@ -82,9 +70,15 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useMakeQuestion } from '/@/store/makeQuestion';
   import { useReward } from '/@/store/reward';
+  import { useUser } from '/@/store/user';
 
-  const reward = useReward();
+  const rewardStore = useReward();
+  const userStore = useUser();
+  const makeQuestion = useMakeQuestion();
+
+  console.log(userStore.appid, userStore.openid, userStore.unionid);
 
   const prizeColumns = [
     { text: '自定义奖励', value: '0' },
@@ -148,7 +142,7 @@
     fieldValue.value = '';
   };
 
-  const answerColumns = [
+  const correctColumns = [
     { text: '1题', value: '1' },
     { text: '2题', value: '2' },
     { text: '3题', value: '3' },
@@ -161,28 +155,63 @@
     { text: '10题', value: '10' },
   ];
 
-  const answerFieldValue = ref('8题');
-  const answerShowPicker = ref(false);
-  const answerSelectedValues = ref(['8']);
+  // 默认值
+  const correctFieldValue = ref('8题');
+  const correctShowPicker = ref(false);
+  const correctSelectedValues = ref(['8']);
 
-  const onAnswerConfirm = ({ selectedOptions }) => {
-    answerShowPicker.value = false;
-    answerFieldValue.value = selectedOptions[0].text;
+  // 设置至少答对数
+  const onCorrectConfirm = ({ selectedOptions }) => {
+    correctShowPicker.value = false;
+    correctFieldValue.value = selectedOptions[0].text;
   };
 
+  // 返回修改出题
   const modifyMakeQuestion = () => {
     router.push({ path: '/make-question' });
   };
 
+  // 保存数据
+  const save = async () => {
+    var c = new window.cloud.Cloud({
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    await c.init();
+
+    // console.log(`${JSON.stringify(res)}`);
+    const res = await c
+      .database()
+      .collection('questions')
+      .add({
+        data: {
+          openid: userStore.openid,
+          prizeContent: rewardStore.prizeContent,
+          prizeIndex: rewardStore.prizeIndex,
+          passScore: rewardStore.requireCorrectNumber,
+          questions: makeQuestion.list,
+        },
+      });
+    console.log('questions.res', res);
+  };
+
+  // 确认出题
   const confirmMakeQuestion = () => {
+    // 奖励index
     const prizeIndex = +prizeSelectedValues.value[0];
 
-    // 保存数据
-    reward.$patch({
+    // 更新数据
+    rewardStore.$patch({
       prizeContent: prizeIndex > 0 ? prizeFieldValue.value : customRewardFieldValue.value, // 奖励内容
       prizeIndex,
-      requireCorrectNumber: +answerSelectedValues.value, // 至少答对
+      requireCorrectNumber: +correctSelectedValues.value, // 至少答对
     });
+
+    // 保存数据
+    save();
+
     router.push({ path: '/share' });
   };
 </script>

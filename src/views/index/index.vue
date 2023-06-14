@@ -19,6 +19,9 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
+  import { useUser } from '/@/store/user';
+
+  const userStore = useUser();
 
   var urlSearch = new URLSearchParams(location.search);
   var accessToken = urlSearch.get('access_token');
@@ -38,9 +41,12 @@
       checkLoginOptions.accessToken = accessToken;
       checkLoginOptions.refreshToken = refreshToken;
     }
+
     const result = await window.cloud.checkLogin(checkLoginOptions);
     console.log(`checkLogin.result: `, result);
+
     if (result.errCode === 0 && result.loggedIn) {
+      // 登录模式
       var c = new window.cloud.Cloud({
         appid: 'wxd4832b465764a784',
         // identityless: true, // 表示是未登录模式
@@ -48,12 +54,24 @@
         resourceEnv: 'env-prod-7geqkmur35ee26ed',
       });
 
+      // 初始化云开发
       await c.init();
 
+      // 获取用户信息
       const res = await c.callFunction({
         name: 'createOrFirstUser',
       });
       console.log('createOrFirstUser.res', res);
+      // alert(`${JSON.stringify(res)}`);
+      if (res.result.success) {
+        userStore.$patch({
+          appid: res.result.data.appid,
+          unionid: res.result.data.unionid,
+          openid: res.result.data.openid,
+          avatar: res.result.data.avatar ? res.result.data.avatar : '',
+          nickname: res.result.data.nickname ? res.result.data.nickname : '',
+        });
+      }
     } else {
       window.cloud.startLogin({
         provider: 'OfficialAccount',
@@ -65,6 +83,7 @@
   })();
 
   const startMakeQuestion = () => {
+    alert(`openid: ${userStore.openid}`);
     router.push({ path: 'make-question' });
   };
 
