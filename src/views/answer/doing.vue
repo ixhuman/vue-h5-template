@@ -35,6 +35,29 @@
 
   const answerQuestion = useAnswerQuestion();
 
+  // 保存数据
+  const save = async () => {
+    var c = new window.cloud.Cloud({
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    await c.init();
+
+    const res = await c.callFunction({
+      name: 'answerQuestion',
+      data: {
+        qid: answerQuestion.questionId,
+        result: answerQuestion.result,
+        answer: answerQuestion.answer,
+        isPass: answerQuestion.isPass,
+        isRedeem: answerQuestion.isRedeem,
+      },
+    });
+    console.log('answerQuestion.res', res);
+  };
+
   // 重答上一题
   const prevQuestion = () => {
     if (answerQuestion.currentNo <= 1) {
@@ -62,6 +85,9 @@
     if (answerQuestion.currentNo >= answerQuestion.total) {
       // 计算结果
       answerQuestion.getResult();
+
+      // 保存结果
+      save();
 
       // 答完题跳转到结果页面
       answerResult();

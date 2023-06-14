@@ -182,6 +182,7 @@
     await c.init();
 
     // console.log(`${JSON.stringify(res)}`);
+    const createTime = c.database().serverDate();
     const res = await c
       .database()
       .collection('questions')
@@ -192,6 +193,7 @@
           prizeIndex: rewardStore.prizeIndex,
           passScore: rewardStore.requireCorrectNumber,
           questions: makeQuestion.list,
+          createTime,
         },
       });
     console.log('questions.res', res);

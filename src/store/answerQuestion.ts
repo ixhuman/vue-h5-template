@@ -3,6 +3,7 @@ import { IQuestion } from '../api/question';
 
 export const useAnswerQuestion = defineStore('answerQuestion', {
   state: () => ({
+    questionId: '',
     prizeContent: '组一个CP',
     passScore: 8,
     answer: [] as number[],
@@ -123,10 +124,16 @@ export const useAnswerQuestion = defineStore('answerQuestion', {
       return state.list.length > 0 ? true : false;
     },
     getCorrectNumber(state) {
+      if (state.result.length === 0) {
+        return 0;
+      }
       return state.result.reduce((prev, curr) => prev + curr);
     },
     // 分数
     getScore(state) {
+      if (state.result.length === 0) {
+        return 0;
+      }
       return state.result.reduce((prev, curr) => prev + curr) * 10;
     },
   },

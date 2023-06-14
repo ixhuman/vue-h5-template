@@ -34,6 +34,31 @@
 
   const answerQuestion = useAnswerQuestion();
 
+  var urlSearch = new URLSearchParams(location.search);
+  var questionId = urlSearch.get('qid');
+
+  (async () => {
+    var c = new window.cloud.Cloud({
+      // appid: 'wxd4832b465764a784',
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    // 初始化云开发
+    await c.init();
+
+    const res = await c.database().collection('questions').where({ _id: questionId }).get();
+    console.log('questions.res', res);
+
+    answerQuestion.$patch({
+      prizeContent: res.data[0].prizeContent,
+      passScore: res.data[0].passScore,
+      list: res.data[0].questions,
+      questionId: res.data[0]._id,
+    });
+  })();
+
   const startAnswering = () => {
     router.push({ path: '/doing-question' });
   };

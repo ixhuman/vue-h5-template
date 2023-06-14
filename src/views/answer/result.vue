@@ -22,8 +22,9 @@
             class="content-area-cell-btn"
             :class="!answerQuestion.isPass ? 'content-area-cell-main-title-not-active' : ''"
             v-if="!answerQuestion.isPass"
-            >未中奖</div
           >
+            未中奖
+          </div>
           <div class="content-area-cell-btn" :class="answerQuestion.isRedeem ? 'content-area-cell-main-title-active' : ''" v-else>
             <template v-if="answerQuestion.isRedeem">已兑奖</template>
             <template v-else>确认兑奖</template>
