@@ -23,7 +23,25 @@
   import { IQuesitonRecord } from '/@/api/questionRecord';
 
   const questionRecord = useQuestionRecord();
-  questionRecord.getList();
+  // questionRecord.getList();
+
+  const openid = '';
+
+  (async () => {
+    var c = new window.cloud.Cloud({
+      // appid: 'wxd4832b465764a784',
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    // 初始化云开发
+    await c.init();
+
+    const res = await c.database().collection('questions').where({ openid }).get();
+    console.log('questionRecord.res', res);
+    questionRecord.list = res.data;
+  })();
 
   const answerRecord = useAnswerRecord();
 

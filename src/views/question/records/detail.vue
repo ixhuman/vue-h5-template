@@ -44,7 +44,24 @@
   import { useCheckQuestion } from '/@/store/checkQuestion';
 
   const answerRecord = useAnswerRecord();
-  answerRecord.getList();
+  // answerRecord.getList();
+  const qid = '';
+
+  (async () => {
+    var c = new window.cloud.Cloud({
+      // appid: 'wxd4832b465764a784',
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    // 初始化云开发
+    await c.init();
+
+    const res = await c.database().collection('answers').where({ questionId: qid }).get();
+    console.log('answerRecord.res', res);
+    answerRecord.list = res.data;
+  })();
 
   const checkQuestion = useCheckQuestion();
 
