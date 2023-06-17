@@ -6,9 +6,9 @@
         <img :src="shareImgUrl" class="share-bg" mode="widthFix" />
       </div>
       <div v-show="!shareImgUrl" id="shareImage" class="content-area-image">
-        <img src="../../assets/share.png" class="share-bg" mode="widthFix" />
+        <img src="../../assets/share.png" class="share-bg" mode="widthFix" @load="loadImg" />
         <div class="share-avatar">
-          <img src="../../assets/avatars/1.jpg" class="share-avatar-img" />
+          <img src="../../assets/avatars/1.jpg" class="share-avatar-img" @load="loadImg" />
         </div>
         <div class="share-tips">
           <div>关于我的10道题</div>
@@ -17,7 +17,7 @@
         <div class="share-reward">
           <div style="">奖励：做一天CP</div>
         </div>
-        <vue-qr text="hello!!!" class="share-qrcode" />
+        <vue-qr text="hello!!!" class="share-qrcode" :callback="generateQRCode" @load="loadImg" />
       </div>
     </div>
   </div>
@@ -47,16 +47,24 @@
     });
   };
 
-  onMounted(async () => {
-    (() => {
-      setTimeout(async () => {
-        // 调用函数，取到截图的二进制数据，对图片进行处理（保存本地、展示等）
-        const imgBlobData = await convertToImage(document.getElementById('shareImage') as HTMLElement, { backgroundColor: null });
-        // console.log(imgBlobData);
-        shareImgUrl.value = imgBlobData;
-      }, 1000);
-    })();
-  });
+  const generateQRCode = async () => {
+    console.log('generateQRCode');
+  };
+
+  const convertHtml = async () => {
+    console.log('loadImg');
+    // 调用函数，取到截图的二进制数据，对图片进行处理（保存本地、展示等）
+    const imgBlobData = await convertToImage(document.getElementById('shareImage') as HTMLElement, { backgroundColor: null });
+    // console.log(imgBlobData);
+    shareImgUrl.value = imgBlobData;
+  };
+
+  let times = 0;
+  const loadImg = async () => {
+    if (++times == 3) {
+      convertHtml();
+    }
+  };
 </script>
 <style lang="scss" scoped>
   .container {
