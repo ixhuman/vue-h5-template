@@ -2,23 +2,76 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-tip"> 长按图片保存到相册，晒到票圈~ </div>
-      <div class="content-area-image">
-        <img src="../../assets/share.png" mode="widthFix" />
-      </div>
-    </div>
-    <div class="operation-area">
-      <div class="operation-area-btn">
-        <div class="operation-area-btn-main" @click="goHome">去公众号查看答题情况</div>
+      <div id="shareImage" class="content-area-image">
+        <template v-if="shareImgUrl">
+          <img :src="shareImgUrl" style="width: 100%" mode="widthFix" />
+        </template>
+        <template v-else>
+          <img src="../../assets/share.png" style="width: 100%" mode="widthFix" />
+          <div
+            style="
+              position: absolute;
+              top: 32px;
+              left: calc(50% - 40px) px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #fff;
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+            "
+          >
+            <img src="../../assets/avatars/1.jpg" style="width: 72px; height: 72px; border-radius: 50%" />
+          </div>
+          <div style="position: absolute; font-size: 24px; font-weight: bold; top: 120px">
+            <div>关于我的10道题</div>
+            <div>你能答对多少？</div>
+          </div>
+          <div style="position: absolute; top: 196px; font-size: 20px; font-weight: bold; color: #0554fc">
+            <div style="">奖励：做一天CP</div>
+          </div>
+          <vue-qr text="hello!!!" style="position: absolute; right: 24px; bottom: 20px; width: 88px; height: 88px" />
+        </template>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-  import router from '/@/router';
+  import vueQr from 'vue-qr/src/packages/vue-qr.vue';
+  import html2canvas from 'html2canvas';
 
-  const goHome = () => {
-    router.push({ path: '/' });
-  };
+  let shareImgUrl = ref('');
+
+  onMounted(async () => {
+    // 生成快照
+    const convertToImage = async (container: HTMLElement, options = {}) => {
+      // 设置放大倍数
+      const scale = window.devicePixelRatio;
+
+      // html2canvas配置项
+      const ops = {
+        scale,
+        useCORS: true,
+        allowTaint: false,
+        ...options,
+      };
+
+      return html2canvas(container, ops).then((canvas) => {
+        // 返回图片的二进制数据
+        return canvas.toDataURL('image/png');
+      });
+    };
+
+    (() => {
+      setTimeout(async () => {
+        // 调用函数，取到截图的二进制数据，对图片进行处理（保存本地、展示等）
+        const imgBlobData = await convertToImage(document.getElementById('shareImage') as HTMLElement, { backgroundColor: null });
+        // console.log(imgBlobData);
+        shareImgUrl.value = imgBlobData;
+      }, 1000);
+    })();
+  });
 </script>
 <style lang="scss" scoped>
   .container {
@@ -46,13 +99,19 @@
   }
 
   .content-area-image {
+    position: relative;
     margin-top: 48px;
     display: flex;
     justify-content: center;
     align-items: center;
-    img {
-      width: 100%;
-    }
+  }
+
+  .content-area-image-share-qrcode {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 160px;
+    height: 160px;
   }
 
   .operation-area {
