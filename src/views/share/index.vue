@@ -2,37 +2,22 @@
   <div class="container">
     <div class="content-area">
       <div class="content-area-tip"> 长按图片保存到相册，晒到票圈~ </div>
-      <div id="shareImage" class="content-area-image">
-        <template v-if="shareImgUrl">
-          <img :src="shareImgUrl" style="width: 100%" mode="widthFix" />
-        </template>
-        <template v-else>
-          <img src="../../assets/share.png" style="width: 100%" mode="widthFix" />
-          <div
-            style="
-              position: absolute;
-              top: 32px;
-              left: calc(50% - 40px) px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background-color: #fff;
-              width: 80px;
-              height: 80px;
-              border-radius: 50%;
-            "
-          >
-            <img src="../../assets/avatars/1.jpg" style="width: 72px; height: 72px; border-radius: 50%" />
-          </div>
-          <div style="position: absolute; font-size: 24px; font-weight: bold; top: 120px">
-            <div>关于我的10道题</div>
-            <div>你能答对多少？</div>
-          </div>
-          <div style="position: absolute; top: 196px; font-size: 20px; font-weight: bold; color: #0554fc">
-            <div style="">奖励：做一天CP</div>
-          </div>
-          <vue-qr text="hello!!!" style="position: absolute; right: 24px; bottom: 20px; width: 88px; height: 88px" />
-        </template>
+      <div v-show="shareImgUrl" class="content-area-image">
+        <img :src="shareImgUrl" class="share-bg" mode="widthFix" />
+      </div>
+      <div v-show="!shareImgUrl" id="shareImage" class="content-area-image">
+        <img src="../../assets/share.png" class="share-bg" mode="widthFix" />
+        <div class="share-avatar">
+          <img src="../../assets/avatars/1.jpg" class="share-avatar-img" />
+        </div>
+        <div class="share-tips">
+          <div>关于我的10道题</div>
+          <div>你能答对多少？</div>
+        </div>
+        <div class="share-reward">
+          <div style="">奖励：做一天CP</div>
+        </div>
+        <vue-qr text="hello!!!" class="share-qrcode" />
       </div>
     </div>
   </div>
@@ -43,26 +28,26 @@
 
   let shareImgUrl = ref('');
 
-  onMounted(async () => {
-    // 生成快照
-    const convertToImage = async (container: HTMLElement, options = {}) => {
-      // 设置放大倍数
-      const scale = window.devicePixelRatio;
+  // 生成快照
+  const convertToImage = async (container: HTMLElement, options = {}) => {
+    // 设置放大倍数
+    const scale = window.devicePixelRatio;
 
-      // html2canvas配置项
-      const ops = {
-        scale,
-        useCORS: true,
-        allowTaint: false,
-        ...options,
-      };
-
-      return html2canvas(container, ops).then((canvas) => {
-        // 返回图片的二进制数据
-        return canvas.toDataURL('image/png');
-      });
+    // html2canvas配置项
+    const ops = {
+      scale,
+      useCORS: true,
+      allowTaint: false,
+      ...options,
     };
 
+    return html2canvas(container, ops).then((canvas) => {
+      // 返回图片的二进制数据
+      return canvas.toDataURL('image/png');
+    });
+  };
+
+  onMounted(async () => {
     (() => {
       setTimeout(async () => {
         // 调用函数，取到截图的二进制数据，对图片进行处理（保存本地、展示等）
@@ -106,12 +91,50 @@
     align-items: center;
   }
 
-  .content-area-image-share-qrcode {
+  .share-bg {
+    width: 100%;
+  }
+
+  .share-avatar {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    top: 64px;
+    left: calc(50% - 40px) px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
     width: 160px;
     height: 160px;
+    border-radius: 50%;
+  }
+
+  .share-avatar-img {
+    width: 144px;
+    height: 144px;
+    border-radius: 50%;
+  }
+
+  .share-tips {
+    position: absolute;
+    font-size: 48px;
+    font-weight: bold;
+    top: 240px;
+  }
+
+  .share-reward {
+    position: absolute;
+    top: 396px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #0554fc;
+  }
+
+  .share-qrcode {
+    position: absolute;
+    right: 48px;
+    bottom: 40px;
+    width: 176px;
+    height: 176px;
   }
 
   .operation-area {
