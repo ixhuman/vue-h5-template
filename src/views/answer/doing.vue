@@ -36,7 +36,7 @@
   const answerQuestion = useAnswerQuestion();
 
   // 保存数据
-  const save = async () => {
+  const saveAnswerQuestion = async () => {
     var c = new window.cloud.Cloud({
       identityless: true, // 表示是未登录模式
       resourceAppid: 'wx50375099287064d3',
@@ -56,6 +56,9 @@
       },
     });
     console.log('answerQuestion.res', res);
+
+    // 答完题跳转到结果页面
+    answerResult();
   };
 
   // 重答上一题
@@ -87,10 +90,7 @@
       answerQuestion.getResult();
 
       // 保存结果
-      save();
-
-      // 答完题跳转到结果页面
-      answerResult();
+      saveAnswerQuestion();
     } else {
       // 下一道题
       setTimeout(() => {

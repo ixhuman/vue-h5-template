@@ -71,14 +71,12 @@
 <script lang="ts" setup>
   import router from '/@/router';
   import { useMakeQuestion } from '/@/store/makeQuestion';
-  import { useReward } from '/@/store/reward';
   import { useUser } from '/@/store/user';
 
-  const rewardStore = useReward();
   const userStore = useUser();
   const makeQuestion = useMakeQuestion();
 
-  console.log(userStore.appid, userStore.openid, userStore.unionid);
+  console.log('reward', makeQuestion.questionId, userStore.appid, userStore.openid, userStore.unionid);
 
   const prizeColumns = [
     { text: '自定义奖励', value: '0' },
@@ -113,7 +111,7 @@
   const onPrizeConfirm = ({ selectedOptions }) => {
     prizeShowPicker.value = false;
     prizeFieldValue.value = selectedOptions[0].text;
-    prizeSelectedValues.value = selectedOptions[0].value;
+    prizeSelectedValues.value = [selectedOptions[0].value];
     if (selectedOptions[0].value == 0) {
       isShowCustomReward.value = true;
     } else {
@@ -172,7 +170,7 @@
   };
 
   // 保存数据
-  const save = async () => {
+  const saveMakeQuestion = async () => {
     var c = new window.cloud.Cloud({
       identityless: true, // 表示是未登录模式
       resourceAppid: 'wx50375099287064d3',
@@ -181,22 +179,22 @@
 
     await c.init();
 
-    // console.log(`${JSON.stringify(res)}`);
-    const createTime = c.database().serverDate();
     const res = await c
       .database()
       .collection('questions')
-      .add({
+      .where({ _id: makeQuestion.questionId })
+      .update({
         data: {
-          openid: userStore.openid,
-          prizeContent: rewardStore.prizeContent,
-          prizeIndex: rewardStore.prizeIndex,
-          passScore: rewardStore.requireCorrectNumber,
-          questions: makeQuestion.list,
-          createTime,
+          prizeContent: makeQuestion.prizeContent,
+          prizeIndex: makeQuestion.prizeIndex,
+          passScore: makeQuestion.requireCorrectNumber,
+          updateTime: c.database().serverDate(),
         },
       });
     console.log('questions.res', res);
+    if (res.errMsg == 'collection.update:ok') {
+      nextPage();
+    }
   };
 
   // 确认出题
@@ -205,15 +203,17 @@
     const prizeIndex = +prizeSelectedValues.value[0];
 
     // 更新数据
-    rewardStore.$patch({
+    makeQuestion.$patch({
       prizeContent: prizeIndex > 0 ? prizeFieldValue.value : customRewardFieldValue.value, // 奖励内容
       prizeIndex,
       requireCorrectNumber: +correctSelectedValues.value, // 至少答对
     });
 
     // 保存数据
-    save();
+    saveMakeQuestion();
+  };
 
+  const nextPage = () => {
     router.push({ path: '/share' });
   };
 </script>

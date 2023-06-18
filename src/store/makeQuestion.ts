@@ -7,6 +7,10 @@ export const useMakeQuestion = defineStore('makeQuestion', {
     total: 10,
     index: 0,
     list: [] as IQuestion[],
+    questionId: '', // 出题ID
+    prizeContent: '', // 奖励内容
+    prizeIndex: 0,
+    requireCorrectNumber: 8, // 至少答对
   }),
 
   getters: {
@@ -21,6 +25,9 @@ export const useMakeQuestion = defineStore('makeQuestion', {
     // 是否初始化
     isInit(state) {
       return state.list.length > 0 ? true : false;
+    },
+    getShareUrl(state) {
+      return 'http://' + window.location.host + '/answer-question?qid=' + state.questionId;
     },
   },
 

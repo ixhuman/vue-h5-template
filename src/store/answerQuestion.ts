@@ -141,7 +141,7 @@ export const useAnswerQuestion = defineStore('answerQuestion', {
   actions: {
     getResult() {
       const score = this.result.reduce((prev, curr) => prev + curr);
-      if (this.passScore < score) {
+      if (this.passScore <= score) {
         this.isPass = true;
       } else {
         this.isPass = false;

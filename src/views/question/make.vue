@@ -34,11 +34,43 @@
 <script setup>
   import router from '/@/router';
   import { useMakeQuestion } from '/@/store/makeQuestion';
+  import { useUser } from '/@/store/user';
 
   const makeQuestion = useMakeQuestion();
+  const userStore = useUser();
 
-  // 初始化10道题
+  // 初始化(生成10道题）
   makeQuestion.isInit || makeQuestion.getList();
+
+  // 保存数据
+  const saveMakeQuestion = async () => {
+    var c = new window.cloud.Cloud({
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    await c.init();
+
+    const res = await c
+      .database()
+      .collection('questions')
+      .add({
+        data: {
+          openid: userStore.openid,
+          questions: makeQuestion.list,
+          createTime: c.database().serverDate(),
+        },
+      });
+    console.log('questions.res', res);
+    if (res.errMsg == 'collection.add:ok') {
+      // 保存到本地
+      makeQuestion.questionId = res._id;
+
+      // 设置奖励（跳转下一个页面）
+      setReward();
+    }
+  };
 
   // 设置答案并且设置下一题
   const setAnswer = (items, item) => {
@@ -46,11 +78,13 @@
     items.forEach((element) => {
       element.active = false;
     });
+
     // 2.设置当前选项为正确答案
     item.active = true;
+
     // 3.下一题 | 10题做完跳转
     if (makeQuestion.currentNo >= makeQuestion.total) {
-      setReward();
+      saveMakeQuestion();
     } else {
       setTimeout(() => {
         makeQuestion.index++;

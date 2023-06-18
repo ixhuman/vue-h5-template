@@ -15,9 +15,9 @@
           <div>你能答对多少？</div>
         </div>
         <div class="share-reward">
-          <div style="">奖励：做一天CP</div>
+          <div style="">奖励：{{ makeQuestion.prizeContent }}</div>
         </div>
-        <vue-qr text="hello!!!" class="share-qrcode" :callback="generateQRCode" @load="loadImg" />
+        <vue-qr :text="makeQuestion.getShareUrl" class="share-qrcode" :callback="generateQRCode" @load="loadImg" />
       </div>
     </div>
   </div>
@@ -25,6 +25,9 @@
 <script lang="ts" setup>
   import vueQr from 'vue-qr/src/packages/vue-qr.vue';
   import html2canvas from 'html2canvas';
+  import { useMakeQuestion } from '/@/store/makeQuestion';
+
+  const makeQuestion = useMakeQuestion();
 
   let shareImgUrl = ref('');
 
@@ -53,7 +56,7 @@
 
   const convertHtml = async () => {
     console.log('loadImg');
-    // 调用函数，取到截图的二进制数据，对图片进行处理（保存本地、展示等）
+    // 取到截图的二进制数据
     const imgBlobData = await convertToImage(document.getElementById('shareImage') as HTMLElement, { backgroundColor: null });
     // console.log(imgBlobData);
     shareImgUrl.value = imgBlobData;
