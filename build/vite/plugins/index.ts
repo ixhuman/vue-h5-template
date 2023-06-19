@@ -24,7 +24,13 @@ export function createVitePlugins(env: ViteEnv, isBuild: boolean) {
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
     // vue支持
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag === 'wx-open-launch-weapp',
+        },
+      },
+    }),
     // JSX支持
     vueJsx(),
     // setup语法糖组件名支持

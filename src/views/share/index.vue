@@ -17,7 +17,7 @@
         <div class="share-reward">
           <div style="">奖励：{{ makeQuestion.prizeContent }}</div>
         </div>
-        <vue-qr :text="makeQuestion.getShareUrl" class="share-qrcode" :callback="generateQRCode" @load="loadImg" />
+        <vue-qr :text="makeQuestion.getShareUrl" class="share-qrcode" @load="loadImg" />
       </div>
     </div>
   </div>
@@ -26,8 +26,14 @@
   import vueQr from 'vue-qr/src/packages/vue-qr.vue';
   import html2canvas from 'html2canvas';
   import { useMakeQuestion } from '/@/store/makeQuestion';
+  import router from '/@/router';
 
   const makeQuestion = useMakeQuestion();
+
+  if (!makeQuestion.hasQuestionId) {
+    console.log('makeQuestion.getShareUrl', makeQuestion.getShareUrl);
+    router.push({ path: '/make-question' });
+  }
 
   let shareImgUrl = ref('');
 
@@ -48,10 +54,6 @@
       // 返回图片的二进制数据
       return canvas.toDataURL('image/png');
     });
-  };
-
-  const generateQRCode = async () => {
-    console.log('generateQRCode');
   };
 
   const convertHtml = async () => {

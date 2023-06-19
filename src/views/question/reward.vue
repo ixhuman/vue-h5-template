@@ -187,7 +187,7 @@
         data: {
           prizeContent: makeQuestion.prizeContent,
           prizeIndex: makeQuestion.prizeIndex,
-          passScore: makeQuestion.requireCorrectNumber,
+          passScore: makeQuestion.passScore,
           updateTime: c.database().serverDate(),
         },
       });
@@ -206,7 +206,7 @@
     makeQuestion.$patch({
       prizeContent: prizeIndex > 0 ? prizeFieldValue.value : customRewardFieldValue.value, // 奖励内容
       prizeIndex,
-      requireCorrectNumber: +correctSelectedValues.value, // 至少答对
+      passScore: +correctSelectedValues.value, // 至少答对
     });
 
     // 保存数据

@@ -18,3 +18,8 @@ app.use(i18n);
 app.use(store);
 
 app.mount('#app');
+
+// app.config.compilerOptions.isCustomElement = (tag) => {
+//   console.log(tag)
+//   return tag === 'wx-open-launch-weapp'
+// };

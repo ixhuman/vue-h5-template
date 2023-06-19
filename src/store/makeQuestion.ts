@@ -4,13 +4,13 @@ import { useQuestionBank } from './questionBank';
 
 export const useMakeQuestion = defineStore('makeQuestion', {
   state: () => ({
-    total: 10,
-    index: 0,
-    list: [] as IQuestion[],
+    total: 10, // 题目总数
+    index: 0, // 当前题目Index
+    questions: [] as IQuestion[], // 题目
     questionId: '', // 出题ID
     prizeContent: '', // 奖励内容
     prizeIndex: 0,
-    requireCorrectNumber: 8, // 至少答对
+    passScore: 8, // 至少答对
   }),
 
   getters: {
@@ -20,12 +20,17 @@ export const useMakeQuestion = defineStore('makeQuestion', {
     },
     // 当前题
     currentQuestion(state) {
-      return state.list[state.index];
+      return state.questions[state.index];
     },
     // 是否初始化
     isInit(state) {
-      return state.list.length > 0 ? true : false;
+      return state.questions.length > 0 ? true : false;
     },
+    // 是否保存成功
+    hasQuestionId(state) {
+      return state.questionId ? true : false;
+    },
+    // 获取分享二维码URL
     getShareUrl(state) {
       return 'http://' + window.location.host + '/answer-question?qid=' + state.questionId;
     },
@@ -33,7 +38,7 @@ export const useMakeQuestion = defineStore('makeQuestion', {
 
   actions: {
     // 获取10道题目
-    getList(num = 10) {
+    getQuestions(num = 10) {
       const ques = useQuestionBank().getAll();
       const length = ques.length;
       const indexs = [] as number[];
@@ -65,14 +70,14 @@ export const useMakeQuestion = defineStore('makeQuestion', {
       //     }
       //   });
 
-      this.list = result;
+      this.questions = result;
 
       return result;
     },
     // 更新一道题 ｜ 替换
     updateQuestion(item: IQuestion) {
       console.log('updateQuestion', item);
-      return this.list.splice(this.index, 1, item);
+      return this.questions.splice(this.index, 1, item);
     },
   },
 });

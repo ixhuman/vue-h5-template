@@ -22,6 +22,32 @@
         </div>
       </div>
     </div>
+    <wx-open-launch-weapp
+      id="launch-btn"
+      username="gh_9f3febb628c2"
+      path="/pages/index/index"
+      @launch="handleLaunchFn"
+      @error="handleErrorFn"
+    >
+      <component :is="'script'" type="text/wxtag-template">
+        <button
+          style="
+            width: 200px;
+            height: 45px;
+            text-align: center;
+            font-size: 17px;
+            display: block;
+            margin: 0 auto;
+            padding: 8px 24px;
+            border: none;
+            border-radius: 4px;
+            background-color: #07c160;
+            color: #fff;
+          "
+          >打开小程序4</button
+        >
+      </component>
+    </wx-open-launch-weapp>
     <div class="operation-area">
       <div class="operation-area-btn">
         <div v-if="makeQuestion.currentNo > 1" class="operation-area-btn-main" @click="toPrevQuestion">上一题</div>
@@ -40,7 +66,39 @@
   const userStore = useUser();
 
   // 初始化(生成10道题）
-  makeQuestion.isInit || makeQuestion.getList();
+  makeQuestion.isInit || makeQuestion.getQuestions();
+
+  wx.config({
+    debug: true, // 调试时可开启
+    appId: 'wx50375099287064d3', // <!-- replace -->
+    timestamp: 0, // 必填，填任意数字即可
+    nonceStr: 'nonceStr', // 必填，填任意非空字符串即可
+    signature: 'signature', // 必填，填任意非空字符串即可
+    jsApiList: ['chooseImage'], // 必填，随意一个接口即可
+    openTagList: ['wx-open-launch-weapp'], // 填入打开小程序的开放标签名
+  });
+
+  () => {
+    // var launchBtn: HTMLElement = document.getElementById('launch-btn')
+    // launchBtn.addEventListener('ready', function () {
+    //   console.log('开放标签 ready')
+    // })
+    // launchBtn.addEventListener('launch', function () {
+    //   console.log('开放标签 success')
+    // })
+    // launchBtn.addEventListener('error', function (e) {
+    //   console.log('开放标签 fail', e.detail)
+    // })
+    // wx.ready(() => {
+    //   console.log('开放标签 ready');
+    // });
+    // wx.launch(() => {
+    //   console.log('开放标签 success');
+    // });
+    // wx.error((e) => {
+    //   console.log('开放标签 fail', e.detail);
+    // });
+  };
 
   // 保存数据
   const saveMakeQuestion = async () => {
@@ -58,7 +116,7 @@
       .add({
         data: {
           openid: userStore.openid,
-          questions: makeQuestion.list,
+          questions: makeQuestion.questions,
           createTime: c.database().serverDate(),
         },
       });
@@ -84,7 +142,14 @@
 
     // 3.下一题 | 10题做完跳转
     if (makeQuestion.currentNo >= makeQuestion.total) {
-      saveMakeQuestion();
+      if (!userStore.openid) {
+        // 公众授权登陆
+        // 跳转到小程序
+        // 返回H5获取用户信息
+        // 提交题目
+      } else {
+        saveMakeQuestion();
+      }
     } else {
       setTimeout(() => {
         makeQuestion.index++;
@@ -114,6 +179,14 @@
   // 设置奖励
   const setReward = () => {
     router.push({ path: '/set-reward' });
+  };
+
+  const handleLaunchFn = () => {
+    console.log('开放标签 success');
+  };
+
+  const handleErrorFn = (e) => {
+    console.log('开放标签 fail', e.detail);
   };
 </script>
 <style lang="scss" scoped>
