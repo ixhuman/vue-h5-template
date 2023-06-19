@@ -29,7 +29,7 @@
       @launch="handleLaunchFn"
       @error="handleErrorFn"
     >
-      <component :is="'script'" type="text/wxtag-template">
+      <div is="vue:script" type="text/wxtag-template">
         <button
           style="
             width: 200px;
@@ -44,9 +44,9 @@
             background-color: #07c160;
             color: #fff;
           "
-          >打开小程序4</button
+          >打开小程序10</button
         >
-      </component>
+      </div>
     </wx-open-launch-weapp>
     <div class="operation-area">
       <div class="operation-area-btn">
