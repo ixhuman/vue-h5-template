@@ -22,12 +22,12 @@
         </div>
       </div>
     </div>
-    <wx-open-launch-weapp
+    <!-- <wx-open-launch-weapp
       id="launch-btn"
       username="gh_9f3febb628c2"
-      path="/pages/index/index"
-      @launch="handleLaunchFn"
-      @error="handleErrorFn"
+      path="/pages/h5/login"
+      @launch="onLaunch"
+      @error="onError"
     >
       <div is="vue:script" type="text/wxtag-template">
         <button
@@ -47,7 +47,7 @@
           >打开小程序10</button
         >
       </div>
-    </wx-open-launch-weapp>
+    </wx-open-launch-weapp> -->
     <div class="operation-area">
       <div class="operation-area-btn">
         <div v-if="makeQuestion.currentNo > 1" class="operation-area-btn-main" @click="toPrevQuestion">上一题</div>
@@ -56,6 +56,70 @@
       </div>
     </div>
   </div>
+  <van-dialog v-model:show="show" title="你还没有登录" :show-confirm-button="false" :closeOnClickOverlay="true">
+    <!-- <img src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-3.jpeg" /> -->
+    <div class="van-dialog-weapp">
+      <wx-open-launch-weapp
+        id="launch-btn"
+        appid="wx50375099287064d3"
+        username="gh_9f3febb628c2"
+        path="/pages/h5/login"
+        env-version="develop"
+        @launch="onLaunch"
+        @error="onError"
+      >
+        <div is="vue:script" type="text/wxtag-template">
+          <button
+            style="
+              width: 200px;
+              height: 45px;
+              text-align: center;
+              font-size: 17px;
+              display: block;
+              margin: 0 auto;
+              padding: 8px 24px;
+              border: none;
+              border-radius: 4px;
+              background-color: #07c160;
+              color: #fff;
+            "
+            >点击登陆</button
+          >
+        </div>
+      </wx-open-launch-weapp>
+    </div>
+  </van-dialog>
+  <!-- <van-popup v-model:show="show" round :style="{ padding: '32px 64px 64px' }" >
+    <van-row justify="center" gutter="20" style="margin-bottom: 32px;">
+      <van-col span="12">你还没有登录</van-col>  
+    </van-row>
+    <wx-open-launch-weapp
+      id="launch-btn"
+      username="gh_9f3febb628c2"
+      path="/pages/h5/login"
+      @launch="onLaunch"
+      @error="onError"
+    >
+    <div is="vue:script" type="text/wxtag-template">
+        <button
+          style="
+            width: 200px;
+            height: 45px;
+            text-align: center;
+            font-size: 17px;
+            display: block;
+            margin: 0 auto;
+            padding: 8px 24px;
+            border: none;
+            border-radius: 4px;
+            background-color: #07c160;
+            color: #fff;
+          "
+          >点击登陆</button
+        >
+      </div>
+    </wx-open-launch-weapp>
+  </van-popup> -->
 </template>
 <script setup>
   import router from '/@/router';
@@ -64,6 +128,8 @@
 
   const makeQuestion = useMakeQuestion();
   const userStore = useUser();
+
+  const show = ref(false);
 
   // 初始化(生成10道题）
   makeQuestion.isInit || makeQuestion.getQuestions();
@@ -78,7 +144,18 @@
     openTagList: ['wx-open-launch-weapp'], // 填入打开小程序的开放标签名
   });
 
-  () => {
+  onMounted(() => {
+    var btn = document.getElementById('launch-btn');
+    btn.addEventListener('launch', function () {
+      console.log('开放标签 success');
+    });
+
+    btn.addEventListener('error', function (e) {
+      console.log('开放标签 fail', e.detail);
+    });
+  });
+
+  // () => {
     // var launchBtn: HTMLElement = document.getElementById('launch-btn')
     // launchBtn.addEventListener('ready', function () {
     //   console.log('开放标签 ready')
@@ -89,15 +166,14 @@
     // launchBtn.addEventListener('error', function (e) {
     //   console.log('开放标签 fail', e.detail)
     // })
-    // wx.ready(() => {
-    //   console.log('开放标签 ready');
-    // });
-    // wx.launch(() => {
-    //   console.log('开放标签 success');
-    // });
-    // wx.error((e) => {
-    //   console.log('开放标签 fail', e.detail);
-    // });
+  // };
+
+  const onLaunch = (e) => {
+    console.log('开放标签 success', e);
+  };
+
+  const onError = (e) => {
+    console.log('开放标签 fail', e.detail);
   };
 
   // 保存数据
@@ -140,21 +216,23 @@
     // 2.设置当前选项为正确答案
     item.active = true;
 
+    show.value = true;
+
     // 3.下一题 | 10题做完跳转
-    if (makeQuestion.currentNo >= makeQuestion.total) {
-      if (!userStore.openid) {
-        // 公众授权登陆
-        // 跳转到小程序
-        // 返回H5获取用户信息
-        // 提交题目
-      } else {
-        saveMakeQuestion();
-      }
-    } else {
-      setTimeout(() => {
-        makeQuestion.index++;
-      }, 200);
-    }
+    // if (makeQuestion.currentNo >= makeQuestion.total) {
+    //   if (!userStore.openid) {
+    //     // 公众授权登陆
+    //     // 跳转到小程序
+    //     // 返回H5获取用户信息
+    //     // 提交题目
+    //   } else {
+    //     saveMakeQuestion();
+    //   }
+    // } else {
+    //   setTimeout(() => {
+    //     makeQuestion.index++;
+    //   }, 200);
+    // }
   };
 
   // 上一题
@@ -179,14 +257,6 @@
   // 设置奖励
   const setReward = () => {
     router.push({ path: '/set-reward' });
-  };
-
-  const handleLaunchFn = () => {
-    console.log('开放标签 success');
-  };
-
-  const handleErrorFn = (e) => {
-    console.log('开放标签 fail', e.detail);
   };
 </script>
 <style lang="scss" scoped>
@@ -325,5 +395,10 @@
     border: 4px solid #000000;
     border-radius: 16px;
     z-index: -1;
+  }
+
+  .van-dialog-weapp {
+    text-align: center;
+    padding: 32px 48px 64px;
   }
 </style>
