@@ -68,7 +68,7 @@
         @launch="onLaunch"
         @error="onError"
       >
-        <div is="vue:script" type="text/wxtag-template">
+        <template is="vue:script" type="text/wxtag-template">
           <button
             style="
               width: 200px;
@@ -85,7 +85,7 @@
             "
             >点击登陆</button
           >
-        </div>
+        </template>
       </wx-open-launch-weapp>
     </div>
   </van-dialog>
@@ -129,22 +129,12 @@
   const makeQuestion = useMakeQuestion();
   const userStore = useUser();
 
-  const show = ref(false);
+  const show = ref(true);
 
   // 初始化(生成10道题）
   makeQuestion.isInit || makeQuestion.getQuestions();
 
-  wx.config({
-    debug: true, // 调试时可开启
-    appId: 'wx50375099287064d3', // <!-- replace -->
-    timestamp: 0, // 必填，填任意数字即可
-    nonceStr: 'nonceStr', // 必填，填任意非空字符串即可
-    signature: 'signature', // 必填，填任意非空字符串即可
-    jsApiList: ['chooseImage'], // 必填，随意一个接口即可
-    openTagList: ['wx-open-launch-weapp'], // 填入打开小程序的开放标签名
-  });
-
-  onMounted(() => {
+  const bindEvents = () => {
     var btn = document.getElementById('launch-btn');
     btn.addEventListener('launch', function () {
       console.log('开放标签 success');
@@ -153,19 +143,53 @@
     btn.addEventListener('error', function (e) {
       console.log('开放标签 fail', e.detail);
     });
+  };
+
+  const wxConfig = () => {
+    wx.config({
+      debug: true, // 调试时可开启
+      appId: 'wx50375099287064d3', // <!-- replace -->
+      timestamp: 0, // 必填，填任意数字即可
+      nonceStr: 'nonceStr', // 必填，填任意非空字符串即可
+      signature: 'signature', // 必填，填任意非空字符串即可
+      jsApiList: ['wx-open-subscribe', 'wx-open-launch-app'], // 必填，需要使用的JS接口列表
+      openTagList: ['wx-open-subscribe', 'wx-open-launch-app'], // 可选，需要使用的开放标签列表，例如['wx-open-launch-app']
+    });
+    wx.ready(function () {
+      console.log('config ready');
+      bindEvents();
+    });
+    wx.error(function () {
+      console.log('config error');
+    });
+  };
+
+  onMounted(() => {
+    wxConfig();
   });
 
+  // onMounted(() => {
+  //   var btn = document.getElementById('launch-btn');
+  //   btn.addEventListener('launch', function () {
+  //     console.log('开放标签 success');
+  //   });
+
+  //   btn.addEventListener('error', function (e) {
+  //     console.log('开放标签 fail', e.detail);
+  //   });
+  // });
+
   // () => {
-    // var launchBtn: HTMLElement = document.getElementById('launch-btn')
-    // launchBtn.addEventListener('ready', function () {
-    //   console.log('开放标签 ready')
-    // })
-    // launchBtn.addEventListener('launch', function () {
-    //   console.log('开放标签 success')
-    // })
-    // launchBtn.addEventListener('error', function (e) {
-    //   console.log('开放标签 fail', e.detail)
-    // })
+  // var launchBtn: HTMLElement = document.getElementById('launch-btn')
+  // launchBtn.addEventListener('ready', function () {
+  //   console.log('开放标签 ready')
+  // })
+  // launchBtn.addEventListener('launch', function () {
+  //   console.log('开放标签 success')
+  // })
+  // launchBtn.addEventListener('error', function (e) {
+  //   console.log('开放标签 fail', e.detail)
+  // })
   // };
 
   const onLaunch = (e) => {
