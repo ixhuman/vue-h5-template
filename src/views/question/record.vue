@@ -4,7 +4,9 @@
       <div class="content-area-cell" v-for="(item, index) in questionRecord.list" :key="index" @click="detail(item)">
         <div class="content-area-cell-bd">
           <div class="content-area-cell-title content-area-cell-title-active">奖励：{{ item.prizeContent }}</div>
-          <div class="content-area-cell-desc"> {{ item.answerers.length }}人答题、{{ item.winners.length }}人获奖 </div>
+          <div class="content-area-cell-desc">
+            {{ item.answererNum ? item.answererNum : 0 }}人答题、{{ item.winnerNum ? item.winnerNum : 0 }}人获奖
+          </div>
         </div>
         <div class="content-area-cell-ft icon-arrow"></div>
       </div>
@@ -21,33 +23,42 @@
   import { useAnswerRecord } from '/@/store/answerRecord';
   import { useQuestionRecord } from '/@/store/questionRecord';
   import { IQuesitonRecord } from '/@/api/questionRecord';
+  import { useUser } from '/@/store/user';
 
   const questionRecord = useQuestionRecord();
+  const userStore = useUser();
   // questionRecord.getList();
-
-  const openid = '';
-
-  (async () => {
-    var c = new window.cloud.Cloud({
-      // appid: 'wxd4832b465764a784',
-      identityless: true, // 表示是未登录模式
-      resourceAppid: 'wx50375099287064d3',
-      resourceEnv: 'env-prod-7geqkmur35ee26ed',
-    });
-
-    // 初始化云开发
-    await c.init();
-
-    const res = await c.database().collection('questions').where({ openid }).get();
-    console.log('questionRecord.res', res);
-    questionRecord.list = res.data;
-  })();
-
-  const answerRecord = useAnswerRecord();
 
   const goHome = () => {
     router.push({ path: '/' });
   };
+
+  const openid = userStore.openid;
+  if (!openid) {
+    console.log('openid为空');
+    // 跳转到首页
+    // goHome();
+  } else {
+    (async () => {
+      var c = new window.cloud.Cloud({
+        // appid: 'wxd4832b465764a784',
+        identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
+
+      // 初始化云开发
+      await c.init();
+
+      const res = await c.database().collection('questions').where({ openid }).orderBy('createTime', 'desc').get();
+      console.log('questionRecord.res', res);
+      if ('collection.get:ok' == res.errMsg && res.data.length) {
+        questionRecord.list = res.data;
+      }
+    })();
+  }
+
+  const answerRecord = useAnswerRecord();
 
   const detail = (itme: IQuesitonRecord) => {
     console.log('itme', itme);
@@ -59,7 +70,7 @@
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
@@ -71,7 +82,7 @@
   }
 
   .content-area {
-    padding: 72px 72px 0;
+    padding: 72px 72px;
   }
 
   .content-area-cell {
@@ -140,7 +151,7 @@
     align-items: center;
     width: 100%;
     margin-top: 48px;
-    margin-bottom: 48px;
+    // margin-bottom: 48px;
     padding: 72px;
     box-sizing: border-box;
   }
