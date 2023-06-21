@@ -59,7 +59,8 @@
   <van-dialog v-model:show="show" title="你还没有登录" :show-confirm-button="false" :closeOnClickOverlay="true">
     <!-- <img src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-3.jpeg" /> -->
     <div class="van-dialog-weapp">
-      <wx-open-launch-weapp
+      <div v-html="wxHtml"></div>
+      <!-- <wx-open-launch-weapp
         id="launch-btn"
         appid="wx50375099287064d3"
         username="gh_9f3febb628c2"
@@ -68,7 +69,7 @@
         @launch="onLaunch"
         @error="onError"
       >
-        <template is="vue:script" type="text/wxtag-template">
+        <div type="text/wxtag-template">
           <button
             style="
               width: 200px;
@@ -85,41 +86,11 @@
             "
             >点击登陆</button
           >
-        </template>
-      </wx-open-launch-weapp>
+        </div>
+      </wx-open-launch-weapp> -->
     </div>
   </van-dialog>
-  <!-- <van-popup v-model:show="show" round :style="{ padding: '32px 64px 64px' }" >
-    <van-row justify="center" gutter="20" style="margin-bottom: 32px;">
-      <van-col span="12">你还没有登录</van-col>  
-    </van-row>
-    <wx-open-launch-weapp
-      id="launch-btn"
-      username="gh_9f3febb628c2"
-      path="/pages/h5/login"
-      @launch="onLaunch"
-      @error="onError"
-    >
-    <div is="vue:script" type="text/wxtag-template">
-        <button
-          style="
-            width: 200px;
-            height: 45px;
-            text-align: center;
-            font-size: 17px;
-            display: block;
-            margin: 0 auto;
-            padding: 8px 24px;
-            border: none;
-            border-radius: 4px;
-            background-color: #07c160;
-            color: #fff;
-          "
-          >点击登陆</button
-        >
-      </div>
-    </wx-open-launch-weapp>
-  </van-popup> -->
+
 </template>
 <script setup>
   import router from '/@/router';
@@ -149,20 +120,55 @@
     wx.config({
       debug: true, // 调试时可开启
       appId: 'wx50375099287064d3', // <!-- replace -->
-      timestamp: 0, // 必填，填任意数字即可
+      timestamp: +new Date(), // 必填，填任意数字即可
       nonceStr: 'nonceStr', // 必填，填任意非空字符串即可
       signature: 'signature', // 必填，填任意非空字符串即可
-      jsApiList: ['wx-open-subscribe', 'wx-open-launch-app'], // 必填，需要使用的JS接口列表
-      openTagList: ['wx-open-subscribe', 'wx-open-launch-app'], // 可选，需要使用的开放标签列表，例如['wx-open-launch-app']
+      jsApiList: ['previewImage'], // 必填，需要使用的JS接口列表
+      openTagList: ['wx-open-subscribe', 'wx-open-launch-weapp'], // 可选，需要使用的开放标签列表，例如['wx-open-launch-weapp']
     });
     wx.ready(function () {
       console.log('config ready');
-      bindEvents();
+      getHtml();
     });
     wx.error(function () {
       console.log('config error');
     });
   };
+
+  const wxHtml = ref('')
+  const getHtml = () => {
+			let script = document.createElement('script')
+			script.type = 'text/wxtag-template'
+			script.text = `<button class="btn blue mt1" style="height: 50px;width: 100px;">跳转小程序</button>`
+			// wxHtml.value =
+			// 	`<wx-open-launch-weapp style="height: 50px;width: 100px;"
+		  //                         id="launch-btn" 
+      //                         appid="wx50375099287064d3"
+      //                         username="gh_9f3febb628c2"
+      //                         path="/pages/h5/login"
+      //                         env-version="develop"
+		  //                         >${script.outerHTML}
+		  //                       </wx-open-launch-weapp>`
+      wxHtml.value = `<wx-open-launch-weapp
+                          id="launch-btn"
+                          appid="wx50375099287064d3" 
+                          username="gh_9f3febb628c2"
+                          env-version="develop"
+                          path="/pages/h5/login">
+          <template>
+            <button style="width: 200px; height: 45px; text-align: center; font-size: 17px; display: block; margin: 0 auto; padding: 8px 24px; border: none; border-radius: 4px; background-color: #07c160; color:#fff;">打开小程序</button>
+          </template>
+        </wx-open-launch-weapp>`
+			nextTick(() => {
+				let launchButton = document.getElementById('launch-btn')
+				launchButton.addEventListener('launch', function(e) {
+					console.log('success', e)
+				})
+				launchButton.addEventListener('error', function(e) {
+					console.log('fail', e)
+				})
+			})
+		}
 
   onMounted(() => {
     wxConfig();
@@ -283,7 +289,7 @@
     router.push({ path: '/set-reward' });
   };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
   .container {
     background-color: #d0d1ff;
     height: 100vh;
