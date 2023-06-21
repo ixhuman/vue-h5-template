@@ -71,6 +71,7 @@
   .container {
     background-color: #d0d1ff;
     height: 100%;
+    min-height: 100vh;
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
