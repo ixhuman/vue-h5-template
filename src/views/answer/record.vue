@@ -2,7 +2,7 @@
   <!--答题/获奖记录-->
   <div class="container">
     <div class="content-area">
-      <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index" @click="reanswerQuestion">
+      <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index" @click="reanswerQuestion(item.questionId)">
         <div class="content-area-cell-bd">
           <div class="content-area-cell-title" :class="item.isPass ? 'content-area-cell-title-active' : ''">{{
             item.isPass ? '奖励：' + item.prizeContent : '未获奖，去重新答题'
@@ -98,8 +98,8 @@
     })();
   }
 
-  const reanswerQuestion = () => {
-    router.push({ path: '/answer-question' });
+  const reanswerQuestion = (questionId: string) => {
+    router.push({ path: '/answer-question', query: { qid: questionId } });
   };
 
   const goHome = () => {
