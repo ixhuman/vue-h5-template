@@ -5,10 +5,10 @@
       <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index" @click="reanswerQuestion">
         <div class="content-area-cell-bd">
           <div class="content-area-cell-title" :class="item.isPass ? 'content-area-cell-title-active' : ''">{{
-            item.isPass ? '奖励：' + item.nickname : '未获奖，去重新答题'
+            item.isPass ? '奖励：' + item.prizeContent : '未获奖，去重新答题'
           }}</div>
           <div class="content-area-cell-desc">
-            <div class="content-area-cell-desc-time">09-05 16:52</div>
+            <div class="content-area-cell-desc-time">{{ item.createTime }}</div>
             <div class="content-area-cell-desc-result">{{ !item.isPass ? '未获奖' : item.isRedeem ? '已兑奖' : '未兑奖' }}</div>
           </div>
         </div>
@@ -17,7 +17,8 @@
             <img class="content-area-cell-ft-avatar" src="../../assets/avatars/2.jpg" mode="widthFix" />
           </div>
           <div class="content-area-cell-ft-img">
-            <img src="../../assets/avatars/3.jpg" mode="widthFix" />
+            <img v-if="userStore.avatarUrl" :src="userStore.avatarUrl" mode="widthFix" />
+            <img v-else src="../../assets/avatars/3.jpg" mode="widthFix" />
           </div>
         </div>
       </div>
@@ -32,11 +33,12 @@
 <script lang="ts" setup>
   import router from '/@/router';
   import { useAnswerRecord } from '/@/store/answerRecord';
+  import { useUser } from '/@/store/user';
 
   const answerRecord = useAnswerRecord();
-  // answerRecord.getList();
+  const userStore = useUser();
 
-  const openid = '';
+  const openid = userStore.openid;
 
   (async () => {
     var c = new window.cloud.Cloud({
@@ -48,10 +50,48 @@
 
     // 初始化云开发
     await c.init();
+    const _ = c.database().command;
+    // 答题记录
+    const resA = await c.database().collection('answers').where({ openid }).orderBy('createTime', 'desc').get();
+    console.log('answerRecord.res', resA);
+    if ('collection.get:ok' == resA.errMsg && resA.data.length) {
+      answerRecord.answers = resA.data;
+    }
 
-    const res = await c.database().collection('answers').where({ openid }).get();
-    console.log('answerRecord.res', res);
-    answerRecord.list = res.data;
+    // 获取出题id
+    const questionIds = answerRecord.getQuestionIds();
+    console.log('questionIds', questionIds);
+
+    if (questionIds.length) {
+      // 出题记录
+      const resQ = await c
+        .database()
+        .collection('questions')
+        .where({ _id: _.in(questionIds) })
+        .get();
+      console.log('questionRecord.res', resQ);
+      if ('collection.get:ok' == resQ.errMsg && resQ.data.length) {
+        answerRecord.questions = resQ.data;
+      }
+    }
+
+    const quesitonOpenids = answerRecord.quesitonOpenids();
+    console.log('quesitonOpenids', quesitonOpenids);
+
+    if (quesitonOpenids.length) {
+      // 出题人
+      const resQU = await c
+        .database()
+        .collection('users')
+        .where({ openid: _.in(quesitonOpenids) })
+        .get();
+      console.log('user.res', resQU);
+      if ('collection.get:ok' == resQU.errMsg && resQU.data.length) {
+        answerRecord.creaters = resQU.data;
+      }
+    }
+
+    answerRecord.getList();
   })();
 
   const reanswerQuestion = () => {
@@ -65,7 +105,8 @@
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
@@ -77,7 +118,7 @@
   }
 
   .content-area {
-    padding: 72px 72px 0;
+    padding: 72px 72px 240px;
   }
 
   .content-area-cell {
@@ -176,7 +217,7 @@
     align-items: center;
     width: 100%;
     margin-top: 48px;
-    margin-bottom: 48px;
+    // margin-bottom: 48px;
     padding: 72px;
     box-sizing: border-box;
   }

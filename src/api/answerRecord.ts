@@ -1,4 +1,6 @@
 export interface IAnswerRecord {
+  _id: string;
+  questionId: string; // 出题id
   index: number;
   avatarUrl: string;
   nickname: string;
