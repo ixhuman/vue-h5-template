@@ -3,7 +3,8 @@
     <div class="content-area">
       <div class="content-area-hd">
         <div class="content-area-hd-user-avatar">
-          <img src="../../../assets/avatars/4.jpg" mode="widthFix" />
+          <img v-if="userStore.avatarUrl" :src="userStore.avatarUrl" mode="widthFix" />
+          <img v-else src="../../../assets/avatars/4.jpg" mode="widthFix" />
         </div>
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">看看朋友们跟你的默契度</div>
@@ -46,8 +47,12 @@
   import router from '/@/router';
   import { useAnswerDetail } from '/@/store/answerDetail';
   import { useCheckQuestion } from '/@/store/checkQuestion';
+  import { useShare } from '/@/store/share';
+  import { useUser } from '/@/store/user';
 
   const answerDetail = useAnswerDetail();
+  const userStore = useUser();
+  const shareStore = useShare();
 
   const qid = answerDetail.getQuestionId;
   if (!qid) {
@@ -89,6 +94,11 @@
   };
 
   const inviteQuestion = () => {
+    shareStore.$patch({
+      prizeContent: answerDetail.getQuestionReward,
+      questionId: answerDetail.getQuestionId,
+    });
+
     router.push({ path: '/share' });
   };
 </script>

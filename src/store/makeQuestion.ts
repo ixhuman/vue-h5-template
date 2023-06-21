@@ -30,10 +30,6 @@ export const useMakeQuestion = defineStore('makeQuestion', {
     hasQuestionId(state) {
       return state.questionId ? true : false;
     },
-    // 获取分享二维码URL
-    getShareUrl(state) {
-      return 'http://' + window.location.host + '/answer-question?qid=' + state.questionId;
-    },
   },
 
   actions: {

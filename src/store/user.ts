@@ -5,7 +5,7 @@ export const useUser = defineStore('user', {
     appid: '',
     unionid: '',
     openid: '',
-    avatar: '',
+    avatarUrl: '',
     nickname: '',
   }),
 

@@ -15,9 +15,9 @@
           <div>你能答对多少？</div>
         </div>
         <div class="share-reward">
-          <div style="">奖励：{{ makeQuestion.prizeContent }}</div>
+          <div style="">奖励：{{ shareStore.prizeContent }}</div>
         </div>
-        <vue-qr :text="makeQuestion.getShareUrl" class="share-qrcode" @load="loadImg" />
+        <vue-qr :text="shareStore.getShareUrl" class="share-qrcode" @load="loadImg" />
       </div>
     </div>
   </div>
@@ -25,15 +25,10 @@
 <script lang="ts" setup>
   import vueQr from 'vue-qr/src/packages/vue-qr.vue';
   import html2canvas from 'html2canvas';
-  import { useMakeQuestion } from '/@/store/makeQuestion';
-  import router from '/@/router';
+  import { useShare } from '/@/store/share';
 
-  const makeQuestion = useMakeQuestion();
-
-  if (!makeQuestion.hasQuestionId) {
-    console.log('makeQuestion.getShareUrl', makeQuestion.getShareUrl);
-    router.push({ path: '/make-question' });
-  }
+  const shareStore = useShare();
+  console.log('shareStore.getShareUrl', shareStore.getShareUrl);
 
   let shareImgUrl = ref('');
 

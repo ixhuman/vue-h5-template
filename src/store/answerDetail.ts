@@ -14,6 +14,10 @@ export const useAnswerDetail = defineStore('answerDetail', {
     getQuestionId(state) {
       return state.questionRecord._id;
     },
+    // 获取出题奖励
+    getQuestionReward(state) {
+      return state.questionRecord.prizeContent;
+    },
   },
 
   actions: {

@@ -71,10 +71,12 @@
 <script lang="ts" setup>
   import router from '/@/router';
   import { useMakeQuestion } from '/@/store/makeQuestion';
+  import { useShare } from '/@/store/share';
   import { useUser } from '/@/store/user';
 
   const userStore = useUser();
   const makeQuestion = useMakeQuestion();
+  const shareStore = useShare();
 
   console.log('reward', makeQuestion.questionId, userStore.appid, userStore.openid, userStore.unionid);
 
@@ -214,6 +216,11 @@
   };
 
   const nextPage = () => {
+    shareStore.$patch({
+      prizeContent: makeQuestion.prizeContent,
+      questionId: makeQuestion.questionId,
+    });
+
     router.push({ path: '/share' });
   };
 </script>
