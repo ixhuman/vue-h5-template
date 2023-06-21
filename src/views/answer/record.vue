@@ -39,60 +39,64 @@
   const userStore = useUser();
 
   const openid = userStore.openid;
+  if (!openid) {
+    console.log('openid为空');
+  } else {
+    (async () => {
+      var c = new window.cloud.Cloud({
+        // appid: 'wxd4832b465764a784',
+        identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
 
-  (async () => {
-    var c = new window.cloud.Cloud({
-      // appid: 'wxd4832b465764a784',
-      identityless: true, // 表示是未登录模式
-      resourceAppid: 'wx50375099287064d3',
-      resourceEnv: 'env-prod-7geqkmur35ee26ed',
-    });
-
-    // 初始化云开发
-    await c.init();
-    const _ = c.database().command;
-    // 答题记录
-    const resA = await c.database().collection('answers').where({ openid }).orderBy('createTime', 'desc').get();
-    console.log('answerRecord.res', resA);
-    if ('collection.get:ok' == resA.errMsg && resA.data.length) {
-      answerRecord.answers = resA.data;
-    }
-
-    // 获取出题id
-    const questionIds = answerRecord.getQuestionIds();
-    console.log('questionIds', questionIds);
-
-    if (questionIds.length) {
-      // 出题记录
-      const resQ = await c
-        .database()
-        .collection('questions')
-        .where({ _id: _.in(questionIds) })
-        .get();
-      console.log('questionRecord.res', resQ);
-      if ('collection.get:ok' == resQ.errMsg && resQ.data.length) {
-        answerRecord.questions = resQ.data;
+      // 初始化云开发
+      await c.init();
+      const _ = c.database().command;
+      // 答题记录
+      const resA = await c.database().collection('answers').where({ openid }).orderBy('createTime', 'desc').get();
+      console.log('answerRecord.res', resA);
+      if ('collection.get:ok' == resA.errMsg && resA.data.length) {
+        answerRecord.answers = resA.data;
       }
-    }
 
-    const quesitonOpenids = answerRecord.quesitonOpenids();
-    console.log('quesitonOpenids', quesitonOpenids);
+      // 获取出题id
+      const questionIds = answerRecord.getQuestionIds();
+      console.log('questionIds', questionIds);
 
-    if (quesitonOpenids.length) {
-      // 出题人
-      const resQU = await c
-        .database()
-        .collection('users')
-        .where({ openid: _.in(quesitonOpenids) })
-        .get();
-      console.log('user.res', resQU);
-      if ('collection.get:ok' == resQU.errMsg && resQU.data.length) {
-        answerRecord.creaters = resQU.data;
+      if (questionIds.length) {
+        // 出题记录
+        const resQ = await c
+          .database()
+          .collection('questions')
+          .where({ _id: _.in(questionIds) })
+          .get();
+        console.log('questionRecord.res', resQ);
+        if ('collection.get:ok' == resQ.errMsg && resQ.data.length) {
+          answerRecord.questions = resQ.data;
+        }
       }
-    }
 
-    answerRecord.getList();
-  })();
+      // 获取出题人openid
+      const quesitonOpenids = answerRecord.quesitonOpenids();
+      console.log('quesitonOpenids', quesitonOpenids);
+
+      if (quesitonOpenids.length) {
+        // 出题人
+        const resQU = await c
+          .database()
+          .collection('users')
+          .where({ openid: _.in(quesitonOpenids) })
+          .get();
+        console.log('user.res', resQU);
+        if ('collection.get:ok' == resQU.errMsg && resQU.data.length) {
+          answerRecord.creaters = resQU.data;
+        }
+      }
+
+      answerRecord.getList();
+    })();
+  }
 
   const reanswerQuestion = () => {
     router.push({ path: '/answer-question' });

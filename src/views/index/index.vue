@@ -88,10 +88,18 @@
   };
 
   const myQuestionRecord = () => {
+    if (!userStore.openid) {
+      console.log('openid为空');
+      return;
+    }
     router.push({ path: 'question-record' });
   };
 
   const answerRecord = () => {
+    if (!userStore.openid) {
+      console.log('openid为空');
+      return;
+    }
     router.push({ path: 'answer-record' });
   };
 </script>
