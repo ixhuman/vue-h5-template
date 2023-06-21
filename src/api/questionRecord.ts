@@ -1,6 +1,7 @@
 import { IQuestion } from './question';
 
 export interface IQuesitonRecord {
+  _id: string;
   index: number;
   prizeContent: string; // 奖励内容
   prizeIndex: number; // 奖励 index

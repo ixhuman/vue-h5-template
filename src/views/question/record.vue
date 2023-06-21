@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="content-area">
-      <div class="content-area-cell" v-for="(item, index) in questionRecord.list" :key="index" @click="detail(item)">
+      <div class="content-area-cell" v-for="(item, index) in questionRecord.list" :key="index" @click="checkDetail(item)">
         <div class="content-area-cell-bd">
           <div class="content-area-cell-title content-area-cell-title-active">奖励：{{ item.prizeContent }}</div>
           <div class="content-area-cell-desc">
@@ -20,17 +20,21 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
-  import { useAnswerRecord } from '/@/store/answerRecord';
-  import { useQuestionRecord } from '/@/store/questionRecord';
+  import { useQuestionRecords } from '/@/store/questionRecord';
   import { IQuesitonRecord } from '/@/api/questionRecord';
   import { useUser } from '/@/store/user';
+  import { useAnswerDetail } from '/@/store/answerDetail';
 
-  const questionRecord = useQuestionRecord();
+  const questionRecord = useQuestionRecords();
   const userStore = useUser();
-  // questionRecord.getList();
+  const answerDetail = useAnswerDetail();
 
   const goHome = () => {
     router.push({ path: '/' });
+  };
+
+  const goAnswerDetail = () => {
+    router.push({ path: `/answer-detail` });
   };
 
   const openid = userStore.openid;
@@ -58,13 +62,11 @@
     })();
   }
 
-  const answerRecord = useAnswerRecord();
-
-  const detail = (itme: IQuesitonRecord) => {
-    console.log('itme', itme);
-    answerRecord.questionRecord = itme;
-
-    router.push({ path: `/answer-detail` });
+  const checkDetail = (item: IQuesitonRecord) => {
+    console.log('item', item);
+    // 保存单个出题记录
+    answerDetail.questionRecord = item;
+    goAnswerDetail();
   };
 </script>
 <style lang="scss" scoped>

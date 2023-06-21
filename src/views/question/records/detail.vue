@@ -8,23 +8,27 @@
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">看看朋友们跟你的默契度</div>
           <div class="content-area-hd-tip-a">
-            {{ answerRecord.questionRecord.answerers.length }} 人答题、 {{ answerRecord.questionRecord.winners.length }} 人获奖，奖励：
-            {{ answerRecord.questionRecord.prizeContent }}
+            {{ answerDetail.questionRecord.answererNum }} 人答题、 {{ answerDetail.questionRecord.winnerNum }} 人获奖，奖励：
+            {{ answerDetail.questionRecord.prizeContent }}
           </div>
         </div>
       </div>
       <div class="content-area-bd">
-        <div class="content-area-cell" v-for="(item, index) in answerRecord.list" :key="index">
+        <div class="content-area-cell" v-for="(item, index) in answerDetail.list" :key="index">
           <div class="content-area-cell-hd">
-            <img :src="item.avatarUrl" mode="widthFix" />
+            <img v-if="item.avatarUrl" :src="item.avatarUrl" mode="widthFix" />
           </div>
           <div class="content-area-cell-bd">
-            <div class="content-area-cell-bd-nickname">{{ item.nickname }}</div>
+            <div class="content-area-cell-bd-nickname">{{ item.nickname ? item.nickname : '微信用户' }}</div>
             <div class="content-area-cell-bd-link" @click="viewQuestion(item.answer)">偷看TA是怎么答的</div>
           </div>
           <div class="content-area-cell-ft">
-            <div class="content-area-cell-ft-percent">{{ item.score }}%</div>
-            <div class="content-area-cell-ft-state">{{ !item.isPass ? '未获奖' : item.isRedeem ? '已兑奖' : '未兑奖' }}</div>
+            <div class="content-area-cell-ft-percent">{{ answerDetail.getScore(item.result) }}%</div>
+            <div
+              class="content-area-cell-ft-state"
+              :class="!item.isPass ? '' : item.isRedeem ? 'content-area-cell-ft-state-red' : 'content-area-cell-ft-state-blue'"
+              >{{ !item.isPass ? '未获奖' : item.isRedeem ? '已兑奖' : '未兑奖' }}</div
+            >
           </div>
         </div>
       </div>
@@ -40,12 +44,15 @@
 </template>
 <script lang="ts" setup>
   import router from '/@/router';
-  import { useAnswerRecord } from '/@/store/answerRecord';
+  import { useAnswerDetail } from '/@/store/answerDetail';
   import { useCheckQuestion } from '/@/store/checkQuestion';
 
-  const answerRecord = useAnswerRecord();
-  // answerRecord.getList();
-  const qid = '';
+  const answerDetail = useAnswerDetail();
+
+  const qid = answerDetail.getQuestionId;
+  if (!qid) {
+    console.log('qid为空');
+  }
 
   (async () => {
     var c = new window.cloud.Cloud({
@@ -58,23 +65,25 @@
     // 初始化云开发
     await c.init();
 
-    const res = await c.database().collection('answers').where({ questionId: qid }).get();
-    console.log('answerRecord.res', res);
-    answerRecord.list = res.data;
+    const res = await c.database().collection('answers').where({ questionId: qid }).orderBy('createTime', 'desc').get();
+    console.log('answerDetail.res', res);
+    if ('collection.get:ok' == res.errMsg && res.data.length) {
+      answerDetail.list = res.data;
+    }
   })();
 
   const checkQuestion = useCheckQuestion();
 
   const goBack = () => {
     // 重置
-    // answerRecord.$reset();
+    // answerDetail.$reset();
     router.push({ path: '/question-record' });
   };
 
   const viewQuestion = (answer: number[]) => {
     checkQuestion.$patch({
       answer,
-      questions: answerRecord.questionRecord.questions,
+      questions: answerDetail.questionRecord.questions,
     });
     router.push({ path: '/check-question' });
   };
@@ -86,7 +95,8 @@
 <style lang="scss" scoped>
   .container {
     background-color: #d0d1ff;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     width: 100vw;
     background-size: 100% auto;
     background-repeat: no-repeat;
@@ -98,7 +108,7 @@
   }
 
   .content-area {
-    padding: 72px 72px 0;
+    padding: 72px 76px 240px;
   }
 
   .content-area-hd {
@@ -177,6 +187,7 @@
     width: 88px;
     height: 88px;
     border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.36);
     img {
       width: 88px;
       height: 88px;
@@ -217,6 +228,15 @@
   .content-area-cell-ft-state {
     font-size: 28px;
     font-weight: bold;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .content-area-cell-ft-state-red {
+    color: #d54941;
+  }
+
+  .content-area-cell-ft-state-blue {
+    color: #0053ff;
   }
 
   .operation-area {
