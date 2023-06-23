@@ -58,17 +58,13 @@
       await c.init();
 
       // 获取用户信息
-      const res = await c.callFunction({
-        name: 'createOrFirstUser',
-      });
+      const res = await c.callFunction({ name: 'createOrFirstUser' });
       console.log('createOrFirstUser.res', res);
       // alert(`${JSON.stringify(res)}`);
       if (res.result.success) {
         userStore.$patch({
-          appid: res.result.data.appid,
           unionid: res.result.data.unionid,
-          openid: res.result.data.openid,
-          avatar: res.result.data.avatar ? res.result.data.avatar : '',
+          avatarUrl: res.result.data.avatarUrl ? res.result.data.avatarUrl : '',
           nickname: res.result.data.nickname ? res.result.data.nickname : '',
         });
       }
@@ -83,12 +79,12 @@
   })();
 
   const startMakeQuestion = () => {
-    alert(`openid: ${userStore.openid}`);
+    alert(`unionid: ${userStore.unionid}`);
     router.push({ path: 'make-question' });
   };
 
   const myQuestionRecord = () => {
-    if (!userStore.openid) {
+    if (!userStore.unionid) {
       console.log('openid为空');
       return;
     }
@@ -96,7 +92,7 @@
   };
 
   const answerRecord = () => {
-    if (!userStore.openid) {
+    if (!userStore.unionid) {
       console.log('openid为空');
       return;
     }

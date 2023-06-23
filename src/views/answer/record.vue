@@ -38,8 +38,8 @@
   const answerRecord = useAnswerRecord();
   const userStore = useUser();
 
-  const openid = userStore.openid;
-  if (!openid) {
+  const unionid = userStore.unionid;
+  if (!unionid) {
     console.log('openid为空');
   } else {
     (async () => {
@@ -54,7 +54,7 @@
       await c.init();
       const _ = c.database().command;
       // 答题记录
-      const resA = await c.database().collection('answers').where({ openid }).orderBy('createTime', 'desc').get();
+      const resA = await c.database().collection('answers').where({ unionid }).orderBy('createTime', 'desc').get();
       console.log('answerRecord.res', resA);
       if ('collection.get:ok' == resA.errMsg && resA.data.length) {
         answerRecord.answers = resA.data;
@@ -86,7 +86,7 @@
         const resQU = await c
           .database()
           .collection('users')
-          .where({ openid: _.in(quesitonOpenids) })
+          .where({ unionid: _.in(quesitonOpenids) })
           .get();
         console.log('user.res', resQU);
         if ('collection.get:ok' == resQU.errMsg && resQU.data.length) {

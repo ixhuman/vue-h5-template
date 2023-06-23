@@ -78,7 +78,7 @@
   const makeQuestion = useMakeQuestion();
   const shareStore = useShare();
 
-  console.log('reward', makeQuestion.questionId, userStore.appid, userStore.openid, userStore.unionid);
+  console.log('reward', makeQuestion.questionId, userStore.unionid, userStore.unionid);
 
   const prizeColumns = [
     { text: '自定义奖励', value: '0' },

@@ -37,8 +37,8 @@
     router.push({ path: `/answer-detail` });
   };
 
-  const openid = userStore.openid;
-  if (!openid) {
+  const unionid = userStore.unionid;
+  if (!unionid) {
     console.log('openid为空');
     // 跳转到首页
     // goHome();
@@ -54,7 +54,7 @@
       // 初始化云开发
       await c.init();
 
-      const res = await c.database().collection('questions').where({ openid }).orderBy('createTime', 'desc').get();
+      const res = await c.database().collection('questions').where({ unionid }).orderBy('createTime', 'desc').get();
       console.log('questionRecord.res', res);
       if ('collection.get:ok' == res.errMsg && res.data.length) {
         questionRecord.list = res.data;

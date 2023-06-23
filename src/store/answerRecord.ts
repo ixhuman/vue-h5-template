@@ -10,13 +10,13 @@ interface IAnswer {
 
 interface IQuesiton {
   _id: string;
-  openid: string;
+  unionid: string;
   prizeContent: string; // 奖励内容
 }
 
 interface ICreater {
   _id: string;
-  openid: string;
+  unionid: string;
   avatarUrl: string; // 出题人头像
 }
 interface IAnswerRecord {
@@ -26,7 +26,7 @@ interface IAnswerRecord {
   createTime: string;
   questionId: string; // 出题id
   avatarUrl: string; // 出题人头像
-  openid: string; // 出题人openid
+  unionid: string; // 出题人openid
   prizeContent: string; // 奖励内容
 }
 
@@ -53,8 +53,8 @@ export const useAnswerRecord = defineStore('answerRecord', {
     quesitonOpenids() {
       const res: string[] = [];
       this.questions.forEach((element) => {
-        if (!res.includes(element.openid)) {
-          res.push(element.openid);
+        if (!res.includes(element.unionid)) {
+          res.push(element.unionid);
         }
       });
       return res;
@@ -76,13 +76,13 @@ export const useAnswerRecord = defineStore('answerRecord', {
         if (obj.questionId) {
           const ques: IQuesiton | undefined = this.questions.find((item) => item._id == obj.questionId);
           if (ques) {
-            obj.openid = ques.openid;
+            obj.unionid = ques.unionid;
             obj.prizeContent = ques.prizeContent;
           }
         }
 
-        if (obj.openid) {
-          const user: ICreater | undefined = this.creaters.find((item) => item.openid == obj.openid);
+        if (obj.unionid) {
+          const user: ICreater | undefined = this.creaters.find((item) => item.unionid == obj.unionid);
           if (user) {
             obj.avatarUrl = user.avatarUrl;
           }

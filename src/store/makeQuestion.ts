@@ -76,4 +76,6 @@ export const useMakeQuestion = defineStore('makeQuestion', {
       return this.questions.splice(this.index, 1, item);
     },
   },
+
+  persist: true,
 });
