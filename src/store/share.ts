@@ -9,7 +9,7 @@ export const useShare = defineStore('share', {
   getters: {
     // 获取分享二维码URL
     getShareUrl(state) {
-      return 'http://' + window.location.host + '/answer-question?qid=' + state.questionId;
+      return 'http://' + window.location.host + '/#/answer-question?qid=' + state.questionId;
     },
   },
 

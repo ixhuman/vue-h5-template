@@ -36,8 +36,10 @@
 
   const answerQuestion = useAnswerQuestion();
 
-  var urlSearch = new URLSearchParams(location.search);
-  var questionId = urlSearch.get('qid');
+  const route = useRoute();
+  console.log('query.qid', route.query.qid);
+
+  var questionId = route.query.qid;
 
   const startAnswering = () => {
     router.push({ path: '/doing-question' });

@@ -47,6 +47,27 @@
   // 初始化(生成10道题）
   makeQuestion.isInit || makeQuestion.getQuestions();
 
+  // 获取个人信息
+  const findOneUser = async () => {
+    var c = new window.cloud.Cloud({
+      identityless: true, // 表示是未登录模式
+      resourceAppid: 'wx50375099287064d3',
+      resourceEnv: 'env-prod-7geqkmur35ee26ed',
+    });
+
+    await c.init();
+
+    const res = await c.database().collection('users').where({ unionid: userStore.unionid }).get();
+    console.log('uses.res', res);
+    if ('collection.get:ok' == res.errMsg && res.data.length) {
+      userStore.$patch({
+        unionid: res.data.unionid,
+        avatarUrl: res.data.avatarUrl,
+        nickname: res.data.nickname,
+      });
+    }
+  };
+
   // 保存数据
   const saveMakeQuestion = async () => {
     var c = new window.cloud.Cloud({
@@ -89,6 +110,7 @@
 
     // 3.下一题 | 10题做完跳转
     if (makeQuestion.currentNo >= makeQuestion.total) {
+      findOneUser();
       if (!userStore.unionid) {
         // 公众授权登陆
         // 返回H5获取用户信息
@@ -99,6 +121,7 @@
         showDialog({
           message: '你还没有登录',
           confirmButtonText: '点击登录',
+          closeOnClickOverlay: true,
         }).then((res) => {
           console.log(res);
           if ('confirm' == res) {
