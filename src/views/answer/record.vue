@@ -40,7 +40,7 @@
 
   const unionid = userStore.unionid;
   if (!unionid) {
-    console.log('openid为空');
+    console.log('unionid为空');
   } else {
     (async () => {
       var c = new window.cloud.Cloud({
@@ -77,16 +77,16 @@
         }
       }
 
-      // 获取出题人openid
-      const quesitonOpenids = answerRecord.quesitonOpenids();
-      console.log('quesitonOpenids', quesitonOpenids);
+      // 获取出题人unionid
+      const quesitonUnionids = answerRecord.quesitonUnionids();
+      console.log('quesitonUnionids', quesitonUnionids);
 
-      if (quesitonOpenids.length) {
+      if (quesitonUnionids.length) {
         // 出题人
         const resQU = await c
           .database()
           .collection('users')
-          .where({ unionid: _.in(quesitonOpenids) })
+          .where({ unionid: _.in(quesitonUnionids) })
           .get();
         console.log('user.res', resQU);
         if ('collection.get:ok' == resQU.errMsg && resQU.data.length) {

@@ -26,7 +26,7 @@ interface IAnswerRecord {
   createTime: string;
   questionId: string; // 出题id
   avatarUrl: string; // 出题人头像
-  unionid: string; // 出题人openid
+  unionid: string; // 出题人unionid
   prizeContent: string; // 奖励内容
 }
 
@@ -50,7 +50,7 @@ export const useAnswerRecord = defineStore('answerRecord', {
       });
       return res;
     },
-    quesitonOpenids() {
+    quesitonUnionids() {
       const res: string[] = [];
       this.questions.forEach((element) => {
         if (!res.includes(element.unionid)) {

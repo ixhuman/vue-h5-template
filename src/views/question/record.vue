@@ -39,7 +39,7 @@
 
   const unionid = userStore.unionid;
   if (!unionid) {
-    console.log('openid为空');
+    console.log('unionid为空');
     // 跳转到首页
     // goHome();
   } else {

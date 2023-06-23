@@ -85,7 +85,7 @@
 
   const myQuestionRecord = () => {
     if (!userStore.unionid) {
-      console.log('openid为空');
+      console.log('unionid为空');
       return;
     }
     router.push({ path: 'question-record' });
@@ -93,7 +93,7 @@
 
   const answerRecord = () => {
     if (!userStore.unionid) {
-      console.log('openid为空');
+      console.log('unionid为空');
       return;
     }
     router.push({ path: 'answer-record' });
