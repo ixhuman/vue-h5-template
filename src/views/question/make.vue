@@ -32,11 +32,13 @@
   </div>
   <van-dialog />
 </template>
-<script setup>
+<script lang="ts" setup>
   import { showDialog } from 'vant';
   import router from '/@/router';
   import { useMakeQuestion } from '/@/store/makeQuestion';
   import { useUser } from '/@/store/user';
+
+  const _window = window as any;
 
   const makeQuestion = useMakeQuestion();
   const userStore = useUser();
@@ -46,34 +48,43 @@
 
   // 获取个人信息
   const findOneUser = async () => {
-    var c = new window.cloud.Cloud({
-      identityless: true, // 表示是未登录模式
-      resourceAppid: 'wx50375099287064d3',
-      resourceEnv: 'env-prod-7geqkmur35ee26ed',
-    });
+    if (!_window.c) {
+      var c = new window.cloud.Cloud({
+        identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
 
-    await c.init();
+      await c.init();
+      _window.c = c;
+    } else {
+      c = _window.c;
+    }
 
-    const res = await c.database().collection('users').where({ unionid: userStore.unionid }).get();
-    console.log('uses.res', res);
-    if ('collection.get:ok' == res.errMsg && res.data.length) {
+    const res = await c.callFunction({ name: 'createOrFirstUser', data: { unionid: userStore.unionid } });
+    console.log('createOrFirstUser.res', res);
+    if (res.result.success) {
       userStore.$patch({
-        unionid: res.data.unionid,
-        avatarUrl: res.data.avatarUrl,
-        nickname: res.data.nickname,
+        avatarUrl: res.result.data.avatarUrl ? res.result.data.avatarUrl : '',
+        nickname: res.result.data.nickname ? res.result.data.nickname : '',
       });
     }
   };
 
   // 保存数据
   const saveMakeQuestion = async () => {
-    var c = new window.cloud.Cloud({
-      identityless: true, // 表示是未登录模式
-      resourceAppid: 'wx50375099287064d3',
-      resourceEnv: 'env-prod-7geqkmur35ee26ed',
-    });
+    if (!_window.c) {
+      var c = new window.cloud.Cloud({
+        identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
 
-    await c.init();
+      await c.init();
+      _window.c = c;
+    } else {
+      c = _window.c;
+    }
 
     const res = await c
       .database()
@@ -89,14 +100,13 @@
     if (res.errMsg == 'collection.add:ok') {
       // 保存到本地
       makeQuestion.questionId = res._id;
-
       // 设置奖励（跳转下一个页面）
       setReward();
     }
   };
 
   // 设置答案并且设置下一题
-  const setAnswer = (items, item) => {
+  const setAnswer = async (items, item) => {
     // 1.重置其它选项
     items.forEach((element) => {
       element.active = false;
@@ -107,12 +117,12 @@
 
     // 3.下一题 | 10题做完跳转
     if (makeQuestion.currentNo >= makeQuestion.total) {
-      findOneUser();
       if (!userStore.unionid) {
         console.log('unionid为空');
       } else if (!userStore.avatarUrl) {
+        // 查询用户信息
+        await findOneUser();
         // 跳转到小程序
-        // window.open("jump-mp.html")
         showDialog({
           message: '你还没有登录',
           confirmButtonText: '点击登录',

@@ -3,7 +3,8 @@
     <div class="content-area">
       <div class="content-area-hd">
         <div class="content-area-hd-user-avatar">
-          <img src="../../assets/avatars/4.jpg" mode="widthFix" />
+          <img v-if="userStore.avatarUrl" :src="userStore.avatarUrl" mode="widthFix" />
+          <img v-else src="../../assets/avatars/4.jpg" mode="widthFix" />
         </div>
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">默契好友才能获得奖励</div>
@@ -166,11 +167,6 @@
     correctFieldValue.value = selectedOptions[0].text;
   };
 
-  // 返回修改出题
-  const modifyMakeQuestion = () => {
-    router.push({ path: '/make-question' });
-  };
-
   // 保存数据
   const saveMakeQuestion = async () => {
     var c = new window.cloud.Cloud({
@@ -203,24 +199,30 @@
   const confirmMakeQuestion = () => {
     // 奖励index
     const prizeIndex = +prizeSelectedValues.value[0];
-
     // 更新数据
     makeQuestion.$patch({
       prizeContent: prizeIndex > 0 ? prizeFieldValue.value : customRewardFieldValue.value, // 奖励内容
       prizeIndex,
       passScore: +correctSelectedValues.value, // 至少答对
     });
-
     // 保存数据
     saveMakeQuestion();
   };
 
+  // 返回修改出题
+  const modifyMakeQuestion = () => {
+    router.push({ path: '/make-question' });
+  };
+
   const nextPage = () => {
+    // 分享
     shareStore.$patch({
       prizeContent: makeQuestion.prizeContent,
       questionId: makeQuestion.questionId,
     });
-
+    // 重置
+    makeQuestion.$reset();
+    // 跳转
     router.push({ path: '/share' });
   };
 </script>
