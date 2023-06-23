@@ -8,7 +8,8 @@
       <div v-show="!shareImgUrl" id="shareImage" class="content-area-image">
         <img src="../../assets/share.png" class="share-bg" mode="widthFix" @load="loadImg" />
         <div class="share-avatar">
-          <img src="../../assets/avatars/1.jpg" class="share-avatar-img" @load="loadImg" />
+          <img v-if="userStore.avatarUrl" :src="userStore.avatarUrl" class="share-avatar-img" @load="loadImg" />
+          <img v-else src="../../assets/avatars/1.jpg" class="share-avatar-img" @load="loadImg" />
         </div>
         <div class="share-tips">
           <div>关于我的10道题</div>
@@ -26,7 +27,9 @@
   import vueQr from 'vue-qr/src/packages/vue-qr.vue';
   import html2canvas from 'html2canvas';
   import { useShare } from '/@/store/share';
+  import { useUser } from '/@/store/user';
 
+  const userStore = useUser();
   const shareStore = useShare();
   console.log('shareStore.getShareUrl', shareStore.getShareUrl);
 

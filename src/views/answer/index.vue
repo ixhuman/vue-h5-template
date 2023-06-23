@@ -3,7 +3,8 @@
     <div class="content-area">
       <div class="content-area-hd">
         <div class="content-area-hd-user-avatar">
-          <img src="../../assets/avatars/4.jpg" mode="widthFix" />
+          <img v-if="answerQuestion.avatarUrl" :src="answerQuestion.avatarUrl" mode="widthFix" />
+          <img v-else src="../../assets/avatars/4.jpg" mode="widthFix" />
         </div>
         <div class="content-area-hd-tips">
           <div class="content-area-hd-tip">10道题你能答对多少？</div>
@@ -51,7 +52,6 @@
 
   // 出题ID为空跳转到首页
   if (!questionId) {
-    // show.value = true;
     // goHome();
     showDialog({
       title: '提示',
@@ -71,14 +71,18 @@
       // 初始化云开发
       await c.init();
 
-      const res = await c.database().collection('questions').where({ _id: questionId }).get();
-      console.log('questions.res', res);
-      if (res.data.length) {
+      const res = await c.callFunction({ name: 'userQuestion', data: { qid: questionId } });
+      console.log('userQuestion.res', res);
+      // alert(`${JSON.stringify(res)}`);
+      if (res.result.success) {
         answerQuestion.$patch({
-          prizeContent: res.data[0].prizeContent,
-          passScore: res.data[0].passScore,
-          list: res.data[0].questions,
-          questionId: res.data[0]._id,
+          unionid: res.result.data.unionid,
+          avatarUrl: res.result.data.avatarUrl ? res.result.data.avatarUrl : '',
+          nickname: res.result.data.nickname ? res.result.data.nickname : '',
+          prizeContent: res.result.data.prizeContent,
+          passScore: res.result.data.passScore,
+          list: res.result.data.questions,
+          questionId: res.result.data._id,
         });
       }
     })();

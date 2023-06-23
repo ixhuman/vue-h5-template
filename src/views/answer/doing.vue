@@ -28,22 +28,120 @@
       </div>
     </div>
   </div>
+  <van-dialog />
 </template>
 <script lang="ts" setup>
+  import { showDialog } from 'vant';
   import router from '/@/router';
   import { useAnswerQuestion } from '/@/store/answerQuestion';
+  import { useUser } from '/@/store/user';
+
+  const _window = window as any;
 
   const answerQuestion = useAnswerQuestion();
+  const userStore = useUser();
+
+  const route = useRoute();
+  var accessToken = route.query.access_token;
+  var refreshToken = route.query.refresh_token;
+
+  const doLogin = async () => {
+    interface obj {
+      [idx: string]: any;
+    }
+
+    let checkLoginOptions: obj = {
+      provider: 'OfficialAccount',
+      appid: 'wxd4832b465764a784',
+    };
+
+    if (route.query.oauthredirect === '1') {
+      checkLoginOptions.accessToken = accessToken;
+      checkLoginOptions.refreshToken = refreshToken;
+    }
+
+    const result = await window.cloud.checkLogin(checkLoginOptions);
+    console.log(`checkLogin.result: `, result);
+
+    if (result.errCode === 0 && result.loggedIn) {
+      // 登录模式
+      var c = new window.cloud.Cloud({
+        appid: 'wxd4832b465764a784',
+        // identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
+
+      // 初始化云开发
+      await c.init();
+      _window.c = c;
+
+      // 获取用户信息
+      const res = await c.callFunction({ name: 'createOrFirstUser' });
+      console.log('createOrFirstUser.res', res);
+      // alert(`${JSON.stringify(res)}`);
+      if (res.result.success) {
+        userStore.$patch({
+          unionid: res.result.data.unionid,
+          avatarUrl: res.result.data.avatarUrl ? res.result.data.avatarUrl : '',
+          nickname: res.result.data.nickname ? res.result.data.nickname : '',
+        });
+
+        if (res.result.data.avatarUrl) {
+          // 跳转小程序
+          location.href = 'jump-mp.html';
+        }
+      }
+    } else {
+      window.cloud.startLogin({
+        provider: 'OfficialAccount',
+        appid: 'wxd4832b465764a784',
+        scope: 'snsapi_base',
+        redirectUri: 'https://env-prod-7geqkmur35ee26ed-1305852262.tcloudbaseapp.com/#/doing-question',
+      });
+    }
+  };
+
+  // 获取个人信息
+  const findOneUser = async () => {
+    if (!_window.c) {
+      var c = new window.cloud.Cloud({
+        appid: 'wxd4832b465764a784',
+        // identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
+
+      await c.init();
+    } else {
+      c = _window.c;
+    }
+
+    const res = await c.database().collection('users').where({ unionid: userStore.unionid }).get();
+    console.log('uses.res', res);
+    if ('collection.get:ok' == res.errMsg && res.data.length) {
+      userStore.$patch({
+        unionid: res.data.unionid,
+        avatarUrl: res.data.avatarUrl,
+        nickname: res.data.nickname,
+      });
+    }
+  };
 
   // 保存数据
   const saveAnswerQuestion = async () => {
-    var c = new window.cloud.Cloud({
-      identityless: true, // 表示是未登录模式
-      resourceAppid: 'wx50375099287064d3',
-      resourceEnv: 'env-prod-7geqkmur35ee26ed',
-    });
+    if (!_window.c) {
+      var c = new window.cloud.Cloud({
+        appid: 'wxd4832b465764a784',
+        // identityless: true, // 表示是未登录模式
+        resourceAppid: 'wx50375099287064d3',
+        resourceEnv: 'env-prod-7geqkmur35ee26ed',
+      });
 
-    await c.init();
+      await c.init();
+    } else {
+      c = _window.c;
+    }
 
     const res = await c.callFunction({
       name: 'answerQuestion',
@@ -86,11 +184,37 @@
     answerQuestion.result[answerQuestion.index] = item.active ? 1 : 0;
 
     if (answerQuestion.currentNo >= answerQuestion.total) {
-      // 计算结果
-      answerQuestion.getResult();
-
-      // 保存结果
-      saveAnswerQuestion();
+      findOneUser();
+      if (!userStore.unionid) {
+        // 跳转授权
+        showDialog({
+          message: '你还没有登录',
+          confirmButtonText: '点击登录',
+          closeOnClickOverlay: true,
+        }).then((res) => {
+          console.log(res);
+          if ('confirm' == res) {
+            doLogin();
+          }
+        });
+      } else if (!userStore.avatarUrl) {
+        // 跳转到小程序
+        showDialog({
+          message: '你还没有登录',
+          confirmButtonText: '点击登录',
+          closeOnClickOverlay: true,
+        }).then((res) => {
+          console.log(res);
+          if ('confirm' == res) {
+            location.href = 'jump-mp.html';
+          }
+        });
+      } else {
+        // 计算结果
+        answerQuestion.getResult();
+        // 保存结果
+        saveAnswerQuestion();
+      }
     } else {
       // 下一道题
       setTimeout(() => {

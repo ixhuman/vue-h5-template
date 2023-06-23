@@ -3,7 +3,10 @@ import { IQuestion } from '../api/question';
 
 export const useAnswerQuestion = defineStore('answerQuestion', {
   state: () => ({
-    questionId: '',
+    unionid: '', // 出题人id
+    avatarUrl: '', // 出题人头像
+    nickname: '', // 出题人昵称
+    questionId: '', // 出题id
     prizeContent: '组一个CP',
     passScore: 8,
     answer: [] as number[],
@@ -148,4 +151,6 @@ export const useAnswerQuestion = defineStore('answerQuestion', {
       }
     },
   },
+
+  persist: true,
 });

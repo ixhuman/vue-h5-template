@@ -30,13 +30,10 @@
       </div>
     </div>
   </div>
-  <!-- <van-dialog v-model:show="show" title="标题" show-cancel-button>
-  </van-dialog> -->
-  <!-- <van-dialog></van-dialog> -->
+  <van-dialog />
 </template>
 <script setup>
   import { showDialog } from 'vant';
-  import 'vant/es/dialog/style';
   import router from '/@/router';
   import { useMakeQuestion } from '/@/store/makeQuestion';
   import { useUser } from '/@/store/user';
@@ -112,9 +109,7 @@
     if (makeQuestion.currentNo >= makeQuestion.total) {
       findOneUser();
       if (!userStore.unionid) {
-        // 公众授权登陆
-        // 返回H5获取用户信息
-        // 提交题目
+        console.log('unionid为空');
       } else if (!userStore.avatarUrl) {
         // 跳转到小程序
         // window.open("jump-mp.html")
@@ -129,6 +124,7 @@
           }
         });
       } else {
+        // 提交题目
         saveMakeQuestion();
       }
     } else {
